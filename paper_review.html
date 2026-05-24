@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>视频生成蒸馏深度解读：DMD / DMD2 / SLA / SLA2</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #21253a;
+    --border: #2e3350;
+    --accent-blue: #4f8ef7;
+    --accent-purple: #9b6dff;
+    --accent-green: #3ecf8e;
+    --accent-orange: #ff9f43;
+    --accent-red: #ff6b6b;
+    --text: #e0e4f0;
+    --text-muted: #7c85a6;
+    --text-dim: #4a5170;
+    --code-bg: #141721;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 15px;
+  }
+  a { color: var(--accent-blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Header ── */
+  .site-header {
+    background: linear-gradient(135deg, #0d1226 0%, #12183a 50%, #0d1226 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 40px;
+    text-align: center;
+  }
+  .site-header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .site-header .subtitle {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .tags { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .tag {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .tag-blue  { background: rgba(79,142,247,.15); color: var(--accent-blue); border: 1px solid rgba(79,142,247,.3); }
+  .tag-purple{ background: rgba(155,109,255,.15); color: var(--accent-purple); border: 1px solid rgba(155,109,255,.3); }
+  .tag-green { background: rgba(62,207,142,.15); color: var(--accent-green); border: 1px solid rgba(62,207,142,.3); }
+  .tag-orange{ background: rgba(255,159,67,.15); color: var(--accent-orange); border: 1px solid rgba(255,159,67,.3); }
+
+  /* ── Layout ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin: 40px auto;
+    max-width: 1100px;
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+  .toc h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: 14px; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 32px; }
+  .toc a { color: var(--text); font-size: 0.9rem; padding: 3px 0; display: block; }
+  .toc a:hover { color: var(--accent-blue); text-decoration: none; }
+  .toc-num { color: var(--text-dim); margin-right: 8px; font-variant-numeric: tabular-nums; }
+
+  /* ── Section ── */
+  section { padding: 48px 0 16px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+  }
+  .icon-blue   { background: rgba(79,142,247,.18); }
+  .icon-purple { background: rgba(155,109,255,.18); }
+  .icon-green  { background: rgba(62,207,142,.18); }
+  .icon-orange { background: rgba(255,159,67,.18); }
+  .section-header h2 { font-size: 1.6rem; font-weight: 700; }
+  .section-header .paper-meta { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+  .section-header .paper-meta a { color: var(--accent-blue); }
+
+  h3 { font-size: 1.05rem; font-weight: 600; color: var(--text); margin: 28px 0 12px; }
+  h4 { font-size: 0.92rem; font-weight: 600; color: var(--text-muted); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .06em; }
+  p { margin-bottom: 14px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+  }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media(max-width: 700px) { .card-grid, .card-grid-3 { grid-template-columns: 1fr; } .toc-grid { grid-template-columns: 1fr; } }
+
+  /* ── Math / Formula ── */
+  .formula-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent-blue);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 18px 0;
+    font-family: 'Courier New', Consolas, monospace;
+    font-size: 0.92rem;
+    overflow-x: auto;
+    line-height: 1.9;
+  }
+  .formula-block.purple { border-left-color: var(--accent-purple); }
+  .formula-block.green  { border-left-color: var(--accent-green); }
+  .formula-block.orange { border-left-color: var(--accent-orange); }
+  .formula-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .math { color: var(--accent-blue); }
+  .math-purple { color: var(--accent-purple); }
+  .math-green  { color: var(--accent-green); }
+  .math-orange { color: var(--accent-orange); }
+
+  /* ── Steps / Pipeline ── */
+  .pipeline {
+    display: flex;
+    gap: 0;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+  .pipeline-step {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 16px 14px;
+    text-align: center;
+    position: relative;
+  }
+  .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+  .pipeline-step:last-child  { border-radius: 0 10px 10px 0; }
+  .pipeline-step + .pipeline-step { border-left: none; }
+  .pipeline-step::after {
+    content: '→';
+    position: absolute; right: -13px; top: 50%; transform: translateY(-50%);
+    color: var(--text-dim); font-size: 1.1rem; z-index: 1;
+  }
+  .pipeline-step:last-child::after { display: none; }
+  .step-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .step-label { font-size: 0.78rem; color: var(--text-muted); }
+  .step-title { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+
+  /* ── Comparison table ── */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 20px 0; }
+  .compare-table th {
+    padding: 10px 14px; text-align: left;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .compare-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(46,51,80,.5);
+    vertical-align: top;
+  }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:hover td { background: rgba(79,142,247,.04); }
+  .yes { color: var(--accent-green); font-weight: 600; }
+  .no  { color: var(--accent-red); }
+  .partial { color: var(--accent-orange); }
+
+  /* ── Callout ── */
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-blue   { background: rgba(79,142,247,.1);  border: 1px solid rgba(79,142,247,.25); }
+  .callout-purple { background: rgba(155,109,255,.1); border: 1px solid rgba(155,109,255,.25); }
+  .callout-green  { background: rgba(62,207,142,.1);  border: 1px solid rgba(62,207,142,.25); }
+  .callout-orange { background: rgba(255,159,67,.1);  border: 1px solid rgba(255,159,67,.25); }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+  .callout-text { font-size: 0.9rem; }
+  .callout-text strong { color: var(--text); }
+
+  /* ── Metric pill ── */
+  .metric-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0; }
+  .metric {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    min-width: 110px;
+  }
+  .metric-val { font-size: 1.5rem; font-weight: 700; line-height: 1; }
+  .metric-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; }
+  .val-blue   { color: var(--accent-blue); }
+  .val-purple { color: var(--accent-purple); }
+  .val-green  { color: var(--accent-green); }
+  .val-orange { color: var(--accent-orange); }
+
+  /* ── Divider ── */
+  .section-divider {
+    height: 1px; background: var(--border);
+    max-width: 1100px; margin: 0 24px;
+  }
+
+  /* ── vs. badge ── */
+  .versus {
+    display: flex; align-items: center; gap: 16px; margin: 24px 0;
+  }
+  .versus-left, .versus-right { flex: 1; }
+  .versus-mid {
+    font-size: 1.1rem; font-weight: 700; color: var(--text-dim);
+    flex-shrink: 0; text-align: center; width: 40px;
+  }
+
+  /* ── Insight boxes ── */
+  .insight-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; margin: 20px 0; }
+  .insight {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .insight-title { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 8px; }
+  .insight p { font-size: 0.86rem; color: var(--text-muted); }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     HEADER
+══════════════════════════════════════ -->
+<header class="site-header">
+  <h1>视频生成蒸馏深度解读</h1>
+  <p class="subtitle">DMD · DMD2 · SLA · SLA2 —— 从分布匹配蒸馏到稀疏线性注意力的完整技术图谱</p>
+  <div class="tags">
+    <span class="tag tag-blue">步数蒸馏</span>
+    <span class="tag tag-purple">分布匹配</span>
+    <span class="tag tag-green">注意力加速</span>
+    <span class="tag tag-orange">视频 DiT</span>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════
+     TOC
+══════════════════════════════════════ -->
+<nav class="toc">
+  <h2>目录</h2>
+  <div class="toc-grid">
+    <div>
+      <a href="#overview"><span class="toc-num">0.</span> 研究全景与脉络</a>
+      <a href="#dmd"><span class="toc-num">1.</span> DMD — 分布匹配蒸馏原理</a>
+      <a href="#dmd2"><span class="toc-num">2.</span> DMD2 — 三大核心改进</a>
+      <a href="#dmd-compare"><span class="toc-num">3.</span> DMD vs DMD2 深度对比</a>
+    </div>
+    <div>
+      <a href="#sla"><span class="toc-num">4.</span> SLA — 稀疏线性注意力</a>
+      <a href="#sla2"><span class="toc-num">5.</span> SLA2 — 可学习路由 + QAT</a>
+      <a href="#sla-compare"><span class="toc-num">6.</span> SLA vs SLA2 深度对比</a>
+      <a href="#synthesis"><span class="toc-num">7.</span> 综合视角：联合方向</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════
+     §0  OVERVIEW
+══════════════════════════════════════ -->
+<section id="overview">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-blue">🗺️</div>
+      <div>
+        <h2>研究全景与脉络</h2>
+        <div class="paper-meta">视频扩散模型的两大加速瓶颈</div>
+      </div>
+    </div>
+
+    <p>视频生成面临两个独立但互补的效率瓶颈：<strong>采样步数过多</strong>（DMD/DMD2 解决），以及<strong>单步注意力计算量过大</strong>（SLA/SLA2 解决）。两条线并行发展，最终在"超少步 + 超低注意力开销"的联合优化上汇聚。</p>
+
+    <div class="card-grid-3">
+      <div class="card">
+        <h4>瓶颈一：采样步数</h4>
+        <p style="font-size:0.87rem;color:var(--text-muted)">标准扩散模型需要 20-50 步去噪，每步都要完整跑一遍 DiT 前向，视频生成延迟无法接受。</p>
+        <p style="font-size:0.83rem;color:var(--accent-blue);margin-top:8px">→ DMD / DMD2 将步数压缩到 1-4 步</p>
+      </div>
+      <div class="card">
+        <h4>瓶颈二：注意力复杂度</h4>
+        <p style="font-size:0.87rem;color:var(--text-muted)">视频 token 序列长度高达 30K+，自注意力 O(N²) 占总计算量 60% 以上，即便 1 步推理也慢。</p>
+        <p style="font-size:0.83rem;color:var(--accent-green);margin-top:8px">→ SLA / SLA2 将注意力降低到 O(N) 量级</p>
+      </div>
+      <div class="card">
+        <h4>联合收益</h4>
+        <p style="font-size:0.87rem;color:var(--text-muted)">两种加速正交，可叠加：DMD2 步数 ×N 倍加速，SLA2 每步注意力 ×18.6 倍加速，端到端加速乘积显著。</p>
+        <p style="font-size:0.83rem;color:var(--accent-purple);margin-top:8px">→ 研究前沿：联合蒸馏</p>
+      </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>论文</th><th>发表</th><th>解决问题</th><th>核心方法</th><th>最优指标</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>DMD</strong></td>
+            <td>CVPR 2024</td>
+            <td>采样步数（50→1）</td>
+            <td>KL 散度梯度 = 真实分数 − 虚假分数</td>
+            <td>FID 2.62 ImageNet-64</td>
+          </tr>
+          <tr>
+            <td><strong>DMD2</strong></td>
+            <td>NeurIPS 2024 Oral</td>
+            <td>DMD 训练不稳定，需昂贵预生成数据</td>
+            <td>去除回归损失 + GAN 判别器 + 反向模拟</td>
+            <td>FID 1.28 ImageNet-64</td>
+          </tr>
+          <tr>
+            <td><strong>SLA</strong></td>
+            <td>arXiv 2509.24006</td>
+            <td>注意力 O(N²) 瓶颈</td>
+            <td>块级三分类：精确 / 线性 / 跳过</td>
+            <td>2.2× 端到端加速，95% 注意力减少</td>
+          </tr>
+          <tr>
+            <td><strong>SLA2</strong></td>
+            <td>arXiv 2602.12675</td>
+            <td>SLA 启发式路由不准，无量化</td>
+            <td>可学习路由 + 可学习混合比 + QAT</td>
+            <td>18.6× 注意力加速，97% 稀疏度</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §1  DMD
+══════════════════════════════════════ -->
+<section id="dmd">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⚗️</div>
+      <div>
+        <h2>DMD：One-step Diffusion with Distribution Matching Distillation</h2>
+        <div class="paper-meta">
+          <a href="https://arxiv.org/abs/2311.18828">arXiv 2311.18828</a> · CVPR 2024 · Tianwei Yin et al. (MIT + Adobe Research)
+        </div>
+      </div>
+    </div>
+
+    <h3>核心动机：为什么不能直接蒸馏？</h3>
+    <p>直觉上可以用 score distillation sampling (SDS) —— 但 SDS 的梯度需要对真实分布计算 score，而真实分布未知，只有教师模型近似。直接让学生输出逼近教师某个确定性轨迹（regression loss）会导致 <strong>mode averaging</strong>（图像模糊）。DMD 的核心洞见是：<em>不要在样本空间对齐，而是在分布空间对齐</em>。</p>
+
+    <h3>数学基础：近似 KL 散度</h3>
+    <p>设学生生成器 G 输出分布为 <span class="math">p_G</span>，教师真实数据分布为 <span class="math">p_data</span>。目标是最小化：</p>
+
+    <div class="formula-block">
+      <div class="formula-label">目标函数</div>
+      <span class="math">min<sub>G</sub> D_KL(p_G ‖ p_data)</span>
+    </div>
+
+    <p>KL 散度对 G 参数的梯度为：</p>
+
+    <div class="formula-block">
+      <div class="formula-label">KL 梯度展开</div>
+      <span class="math">∇<sub>θ</sub> D_KL(p_G ‖ p_data)</span><br>
+      <span class="math">= E<sub>x~p_G</sub> [ ∇<sub>x</sub> log p_G(x) − ∇<sub>x</sub> log p_data(x) ] · ∂G/∂θ</span><br><br>
+      <span class="math-purple">= E<sub>x~p_G</sub> [ <strong>s_fake(x,t)</strong> − <strong>s_real(x,t)</strong> ] · ∂G/∂θ</span>
+    </div>
+
+    <div class="callout callout-blue">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        <strong>关键洞见：</strong>KL 梯度等于两个 score function 之差。只要能分别估计 p_G 和 p_data 的 score，就不需要显式密度。
+        两个 score 各用一个独立的扩散模型来参数化：<strong>s_fake</strong> 在学生生成的样本上训练，<strong>s_real</strong> 在真实数据上训练（直接用教师权重初始化）。
+      </div>
+    </div>
+
+    <h3>完整训练流程</h3>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-icon">🎲</div>
+        <div class="step-title">采样噪声</div>
+        <div class="step-label">z ~ N(0,I)</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🎓</div>
+        <div class="step-title">学生生成</div>
+        <div class="step-label">x̂ = G(z; θ)<br>单步前向</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📊</div>
+        <div class="step-title">双分数估计</div>
+        <div class="step-label">s_fake(x̂)<br>s_real(x̂)</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📐</div>
+        <div class="step-title">回归损失</div>
+        <div class="step-label">‖G(z) − x_teacher‖²</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🔄</div>
+        <div class="step-title">梯度更新</div>
+        <div class="step-label">更新 θ<br>更新 s_fake</div>
+      </div>
+    </div>
+
+    <h3>两个损失的作用</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>分布匹配损失 L_DM</h4>
+        <div class="formula-block" style="margin-top:10px">
+          <span class="math">L_DM = E[‖s_fake(G(z),t) − s_real(G(z),t)‖²]</span>
+        </div>
+        <p style="font-size:0.86rem;color:var(--text-muted)">驱动学生输出的整体分布向真实数据分布靠拢。使学生能覆盖真实数据的多个模态，不会模糊。</p>
+      </div>
+      <div class="card">
+        <h4>回归损失 L_reg</h4>
+        <div class="formula-block" style="margin-top:10px">
+          <span class="math">L_reg = E[‖G(z) − DDIM<sub>teacher</sub>(z)‖²]</span>
+        </div>
+        <p style="font-size:0.86rem;color:var(--text-muted)">防止 L_DM 训练初期不稳定导致的梯度爆炸，作为正则化项。需预先运行教师多步采样生成"伪标签"数据集。</p>
+      </div>
+    </div>
+
+    <h3>Fake Score 模型的训练</h3>
+    <p>这是 DMD 的细节难点。s_fake 需要实时跟踪学生 G 生成的分布变化，因此要与 G 交替训练：</p>
+    <div class="formula-block purple">
+      <div class="formula-label">s_fake 更新目标（score matching）</div>
+      <span class="math-purple">L_score = E<sub>t,x̂~p_G,ε</sub> [ ‖s_fake(x̂ + σ_t ε, t) − ε‖² ]</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">其中 x̂ = G(z) 是当前学生的输出，σ_t 是扩散噪声尺度</span>
+    </div>
+
+    <h3>实验结果</h3>
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val val-blue">2.62</div><div class="metric-label">FID · ImageNet 64²</div></div>
+      <div class="metric"><div class="metric-val val-blue">11.49</div><div class="metric-label">FID · COCO-30K 0-shot</div></div>
+      <div class="metric"><div class="metric-val val-blue">20</div><div class="metric-label">FPS · FP16 推理</div></div>
+      <div class="metric"><div class="metric-val val-blue">1</div><div class="metric-label">NFE（推理步数）</div></div>
+    </div>
+
+    <h3>DMD 的局限</h3>
+    <div class="callout callout-orange">
+      <div class="callout-icon">⚠️</div>
+      <div class="callout-text">
+        <strong>昂贵的预生成数据集：</strong>回归损失需要教师用 DDIM 多步采样生成一个大规模噪声→图像配对数据集，对大分辨率（如 SDXL 1024²）成本极高。<br><br>
+        <strong>Fake score 滞后问题：</strong>s_fake 无法完美实时追踪 p_G 的变化，会引入误差梯度，导致学生早期训练不稳定。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §2  DMD2
+══════════════════════════════════════ -->
+<section id="dmd2">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🚀</div>
+      <div>
+        <h2>DMD2：Improved Distribution Matching Distillation</h2>
+        <div class="paper-meta">
+          <a href="https://arxiv.org/abs/2405.14867">arXiv 2405.14867</a> · NeurIPS 2024 Oral 🔥 · Tianwei Yin et al.
+        </div>
+      </div>
+    </div>
+
+    <p>DMD2 在 DMD 的基础上提出三个独立但协同的改进，彻底解决了 DMD 的三个痛点。</p>
+
+    <div class="insight-grid">
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-purple)">改进 ①</div>
+        <p>去除回归损失和预生成数据集，改用 GAN 判别器作替代正则化</p>
+      </div>
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-purple)">改进 ②</div>
+        <p>两时间尺度更新规则，解决 fake score 训练滞后导致的不稳定</p>
+      </div>
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-purple)">改进 ③</div>
+        <p>反向模拟（Backward Simulation），解决训练-推理分布不匹配，并支持多步生成</p>
+      </div>
+    </div>
+
+    <h3>改进① — GAN 损失替代回归损失</h3>
+    <p>DMD2 彻底<strong>去除了 L_reg</strong>，无需预计算教师轨迹数据集。取而代之引入一个判别器 D，在真实图像和学生生成图像之间做区分：</p>
+
+    <div class="formula-block purple">
+      <div class="formula-label">GAN 损失（Hinge 形式）</div>
+      <span class="math-purple">L_GAN(G) = −E<sub>x̂~p_G</sub>[D(x̂)]</span><br>
+      <span class="math-purple">L_GAN(D) = E<sub>x~p_data</sub>[max(0,1−D(x))] + E<sub>x̂~p_G</sub>[max(0,1+D(x̂))]</span>
+    </div>
+
+    <div class="callout callout-purple">
+      <div class="callout-icon">🔍</div>
+      <div class="callout-text">
+        <strong>为什么 GAN loss 能替代回归 loss？</strong><br>
+        回归损失的本质是"样本级对齐"，GAN 损失是"分布级对齐"。GAN 判别器的梯度信号更接近 DMD 的分布匹配哲学，且无需预生成数据，直接在真实数据上训练判别器即可。
+      </div>
+    </div>
+
+    <p>总训练损失变为：</p>
+    <div class="formula-block purple">
+      <div class="formula-label">DMD2 总损失</div>
+      <span class="math-purple">L_total = L_DM + λ · L_GAN</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">λ 为 GAN 损失权重超参数，论文中约 0.1</span>
+    </div>
+
+    <h3>改进② — 两时间尺度更新规则 (Two Time-Scale Update Rule)</h3>
+    <p>DMD 的 fake score 不稳定根源在于：学生 G 更新太快，fake score 来不及跟上，导致 KL 梯度估计偏差。DMD2 采用不对称学习率：</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>学生 G 的学习率</h4>
+        <div class="formula-block" style="margin-top:8px;font-size:0.9rem">
+          <span class="math">η_G = 1e-5</span>（慢）
+        </div>
+        <p style="font-size:0.86rem;color:var(--text-muted)">G 参数更新步幅小，保证 fake score 有时间追踪当前分布。</p>
+      </div>
+      <div class="card">
+        <h4>Fake Score 的学习率</h4>
+        <div class="formula-block" style="margin-top:8px;font-size:0.9rem">
+          <span class="math">η_fake = 1e-4</span>（快 ×10）
+        </div>
+        <p style="font-size:0.86rem;color:var(--text-muted)">fake score 更新远快于 G，确保在 G 每次更新时都能准确估计当前 p_G 的 score。</p>
+      </div>
+    </div>
+
+    <h3>改进③ — 反向模拟 (Backward Simulation)</h3>
+    <p>DMD 训练时用噪声 z 作为学生输入，但<strong>推理时多步采样的中间输入</strong>（来自前一步学生输出加噪）与之不同，形成 train-test mismatch。DMD2 通过 backward simulation 解决：</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-icon">🎲</div>
+        <div class="step-title">纯噪声 z</div>
+        <div class="step-label">第 T 步</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🎓</div>
+        <div class="step-title">学生第1步</div>
+        <div class="step-label">x̂₁ = G(z,t₁)</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📡</div>
+        <div class="step-title">重新加噪</div>
+        <div class="step-label">x̃₁ = 加噪(x̂₁,t₂)</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🎓</div>
+        <div class="step-title">学生第2步</div>
+        <div class="step-label">x̂₂ = G(x̃₁,t₂)</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📊</div>
+        <div class="step-title">计算损失</div>
+        <div class="step-label">每步均计算<br>L_DM + L_GAN</div>
+      </div>
+    </div>
+
+    <p>这样在训练中真实模拟了多步推理的输入分布，student 在每一步接受的输入与推理完全一致。同时这一机制自然支持 <strong>1 步、2 步、4 步</strong>等灵活步数设置。</p>
+
+    <h3>实验结果</h3>
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val val-purple">1.28</div><div class="metric-label">FID · ImageNet 64²</div></div>
+      <div class="metric"><div class="metric-val val-purple">8.35</div><div class="metric-label">FID · COCO 2014 0-shot</div></div>
+      <div class="metric"><div class="metric-val val-purple">1~4</div><div class="metric-label">灵活推理步数 NFE</div></div>
+      <div class="metric"><div class="metric-val val-purple">SDXL</div><div class="metric-label">可扩展至 1024² 像素</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §3  DMD vs DMD2
+══════════════════════════════════════ -->
+<section id="dmd-compare">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-blue">⚖️</div>
+      <div>
+        <h2>DMD vs DMD2 深度对比</h2>
+      </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>DMD</th>
+            <th>DMD2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>正则化方式</strong></td>
+            <td class="no">回归损失（需预生成数据集）</td>
+            <td class="yes">GAN 判别器（直接用真实数据）</td>
+          </tr>
+          <tr>
+            <td><strong>预生成数据集</strong></td>
+            <td class="no">需要（大规模 DDIM 多步采样）</td>
+            <td class="yes">不需要</td>
+          </tr>
+          <tr>
+            <td><strong>训练稳定性</strong></td>
+            <td class="partial">中等（fake score 易滞后）</td>
+            <td class="yes">高（两时间尺度更新）</td>
+          </tr>
+          <tr>
+            <td><strong>推理步数</strong></td>
+            <td>固定 1 步</td>
+            <td class="yes">1 / 2 / 4 步灵活切换</td>
+          </tr>
+          <tr>
+            <td><strong>Train-test mismatch</strong></td>
+            <td class="no">存在（训练输入 ≠ 推理输入）</td>
+            <td class="yes">已修复（backward simulation）</td>
+          </tr>
+          <tr>
+            <td><strong>可扩展到大模型</strong></td>
+            <td class="partial">困难（预生成成本与模型规模正比）</td>
+            <td class="yes">可扩展（SDXL 1024²）</td>
+          </tr>
+          <tr>
+            <td><strong>FID 最优值</strong></td>
+            <td>2.62（ImageNet-64）</td>
+            <td class="yes">1.28（ImageNet-64）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>核心改进路径</h3>
+    <div class="formula-block">
+      <div class="formula-label">DMD 总损失</div>
+      <span class="math">L = L_DM (分布匹配) + L_reg (回归正则)</span>
+    </div>
+    <div class="formula-block purple">
+      <div class="formula-label">DMD2 总损失</div>
+      <span class="math-purple">L = L_DM (分布匹配) + λ·L_GAN (GAN 正则)</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">+ 两时间尺度更新 + backward simulation</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §4  SLA
+══════════════════════════════════════ -->
+<section id="sla">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-green">⚡</div>
+      <div>
+        <h2>SLA：Beyond Sparsity in Diffusion Transformers via Fine-Tunable Sparse-Linear Attention</h2>
+        <div class="paper-meta">
+          <a href="https://arxiv.org/abs/2509.24006">arXiv 2509.24006</a> · Jintao Zhang et al. (清华 + 伯克利)
+        </div>
+      </div>
+    </div>
+
+    <h3>问题背景：视频 DiT 的注意力困境</h3>
+    <p>Wan2.1 等视频 DiT 在处理 5 秒 480p 视频时，时空 token 序列长度高达 <strong>30,000+</strong>。标准全注意力（Full Attention）复杂度 O(N²)，注意力模块占单步推理时间的 60% 以上，成为核心瓶颈。</p>
+
+    <p>此前纯稀疏注意力方法（如 SpargeAttn）在稀疏比例超过 70% 后质量急剧下降，原因在于：<em>被跳过的"边际权重"块虽小但非零，积累误差显著</em>。</p>
+
+    <h3>核心观察：注意力权重的二元结构</h3>
+    <div class="callout callout-green">
+      <div class="callout-icon">🔬</div>
+      <div class="callout-text">
+        <strong>关键发现：</strong>视频 DiT 的注意力权重矩阵 A 可以分解为两个部分：<br>
+        <br>
+        <strong>① 稀疏高秩部分：</strong>少量（约 5-30%）幅值大的权重块，包含主要语义信息，秩高，<em>必须精确计算</em>。<br>
+        <strong>② 稠密低秩部分：</strong>大量接近均匀分布的小权重块，整体呈极低秩结构，<em>可用线性注意力（低秩分解）近似</em>。
+      </div>
+    </div>
+
+    <h3>三分类注意力块</h3>
+    <p>SLA 将注意力矩阵按 block（例如 64×64 token block）划分，依据块内注意力权重幅值将每个 QK 块分为三类：</p>
+
+    <div class="card-grid-3">
+      <div class="card" style="border-color:rgba(79,142,247,.4)">
+        <h4 style="color:var(--accent-blue)">🔵 Critical（关键块）</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">权重幅值 ≥ 阈值 τ_high<br>用 <strong>精确 FlashAttention</strong> 计算<br>复杂度 O(N_critical²)</p>
+      </div>
+      <div class="card" style="border-color:rgba(62,207,142,.4)">
+        <h4 style="color:var(--accent-green)">🟢 Marginal（边际块）</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">权重幅值在 [τ_low, τ_high)<br>用<strong>线性注意力核</strong>近似（ELU 或 ReLU 特征映射）<br>复杂度 O(N·d)</p>
+      </div>
+      <div class="card" style="border-color:rgba(120,120,120,.3)">
+        <h4 style="color:var(--text-dim)">⚫ Negligible（可忽略块）</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">权重幅值 &lt; τ_low<br><strong>直接跳过</strong>，贡献为 0<br>复杂度 O(1)</p>
+      </div>
+    </div>
+
+    <h3>线性注意力近似</h3>
+    <p>对 Marginal 块，利用核技巧将 softmax 注意力分解为特征映射乘积：</p>
+
+    <div class="formula-block green">
+      <div class="formula-label">线性注意力近似（ELU 特征映射）</div>
+      <span class="math-green">Attn_linear(Q,K,V) = φ(Q) · (φ(K)ᵀ V)</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">先算 φ(K)ᵀV（O(N·d·d) 一次），再对每个 Q 查询（O(N·d)）</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">φ(x) = ELU(x) + 1  确保非负性</span>
+    </div>
+
+    <h3>Fine-Tuning 恢复质量</h3>
+    <p>替换注意力后直接推理质量下降，SLA 用少量视频数据做微调恢复：</p>
+
+    <div class="formula-block green">
+      <div class="formula-label">蒸馏微调损失</div>
+      <span class="math-green">L_finetune = E[‖ SLA_output − FullAttn_output ‖²]</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">用原始完整注意力输出作为软标签，对 SLA 模型做特征级蒸馏</span>
+    </div>
+
+    <p>实验中仅用 <strong>20,000 个 5 秒 480p 视频</strong>，微调数千步即可完全恢复生成质量。</p>
+
+    <h3>实验结果（Wan2.1-1.3B）</h3>
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val val-green">95%</div><div class="metric-label">注意力计算量减少</div></div>
+      <div class="metric"><div class="metric-val val-green">13.7×</div><div class="metric-label">注意力模块加速</div></div>
+      <div class="metric"><div class="metric-val val-green">2.2×</div><div class="metric-label">端到端视频生成加速</div></div>
+      <div class="metric"><div class="metric-val val-green">≈0</div><div class="metric-label">FVD 质量损失</div></div>
+    </div>
+
+    <h3>工程实现：SageSLA</h3>
+    <p>基于 <a href="https://github.com/thu-ml/SageAttention" target="_blank">SageAttention</a> 实现的定制 CUDA 核，统一处理三类 block 的分支路径，支持 <code>bfloat16</code> 和 block-level 动态调度。端到端加速（2.2×）远小于注意力单模块加速（13.7×）的原因在于：video DiT 中 FFN 和归一化层也占相当比例，注意力并非唯一瓶颈。</p>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §5  SLA2
+══════════════════════════════════════ -->
+<section id="sla2">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-orange">🧠</div>
+      <div>
+        <h2>SLA2：Sparse-Linear Attention with Learnable Routing and QAT</h2>
+        <div class="paper-meta">
+          <a href="https://arxiv.org/abs/2602.12675">arXiv 2602.12675</a> · Jintao Zhang, Haoxu Wang, Kai Jiang et al. (清华 + 伯克利)
+        </div>
+      </div>
+    </div>
+
+    <h3>SLA 的三个残留缺陷</h3>
+    <div class="card-grid-3">
+      <div class="card">
+        <h4>缺陷一：启发式路由</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">SLA 依赖注意力权重幅值来划分三类块，但这是一个<em>事后估计</em>——要先算出权重才能决定如何算，存在循环依赖，且阈值手工设定不具普适性。</p>
+      </div>
+      <div class="card">
+        <h4>缺陷二：分解不忠实</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">SLA 的"边际块用线性注意力"并非数学上对原始 softmax 注意力的严格近似，两者在某些 token 模式下存在系统性偏差。</p>
+      </div>
+      <div class="card">
+        <h4>缺陷三：无量化</h4>
+        <p style="font-size:0.86rem;color:var(--text-muted)">SLA 仍使用 BF16 精度。注意力的 Q/K/V 占用大量带宽，低比特量化可进一步降低内存访问瓶颈，但直接量化会引入较大误差。</p>
+      </div>
+    </div>
+
+    <h3>改进① — 可学习路由器 (Learnable Router)</h3>
+    <p>SLA2 引入一个轻量级路由网络 R，在正向传播前<strong>预测</strong>每个 QK 块应走稀疏还是线性分支，无需实际计算注意力权重：</p>
+
+    <div class="formula-block orange">
+      <div class="formula-label">路由决策（软路由，训练时）</div>
+      <span class="math-orange">r_{ij} = σ( R(Q_i, K_j) ) ∈ [0, 1]</span><br>
+      <span class="math-orange">Attn_{ij} = r_{ij} · SparseAttn(Q_i,K_j) + (1−r_{ij}) · LinearAttn(Q_i,K_j)</span>
+    </div>
+
+    <div class="formula-block orange">
+      <div class="formula-label">路由决策（硬路由，推理时）</div>
+      <span class="math-orange">r_{ij} = 1 if R(Q_i,K_j) ≥ 0.5  →  精确计算</span><br>
+      <span class="math-orange">r_{ij} = 0 if R(Q_i,K_j) &lt; 0.5  →  线性近似</span>
+    </div>
+
+    <div class="callout callout-orange">
+      <div class="callout-icon">💡</div>
+      <div class="callout-text">
+        <strong>路由器的设计：</strong>R 是一个极轻量的 MLP（几个线性层 + 激活），输入为 Q_i 和 K_j 的压缩表示（通过池化降维），参数量相对整个 DiT 可忽略不计。训练用 Straight-Through Estimator 保证梯度流通过硬路由决策。
+      </div>
+    </div>
+
+    <h3>改进② — 忠实的稀疏-线性分解</h3>
+    <p>SLA2 提出了一个数学上更严格的分解方式。核心思路是：softmax 注意力权重可以分解为一个"高注意力聚焦部分"与"低注意力背景部分"，对应的 value 聚合可以分别计算并通过<strong>可学习混合比 α</strong> 合并：</p>
+
+    <div class="formula-block orange">
+      <div class="formula-label">忠实分解（Faithful Decomposition）</div>
+      <span class="math-orange">A = softmax(QKᵀ/√d) = α · A_sparse + (1−α) · A_linear</span><br>
+      <span class="math-orange">Output = α · (A_sparse · V) + (1−α) · LinearAttn(Q,K,V)</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">α 是逐层/逐头可学习标量，随训练自动调整稀疏与线性的权重</span>
+    </div>
+
+    <h3>改进③ — 量化感知训练 QAT</h3>
+    <p>SLA2 在微调时同步加入 QAT，将 Q/K/V 矩阵量化到 INT8，用 fake quantization 节点模拟量化误差，让模型学会在低精度下保持精度：</p>
+
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="step-icon">🔢</div>
+        <div class="step-title">BF16 Q/K/V</div>
+        <div class="step-label">原始精度</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📉</div>
+        <div class="step-title">Fake Quant</div>
+        <div class="step-label">模拟 INT8 误差</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">🧠</div>
+        <div class="step-title">SLA2 注意力</div>
+        <div class="step-label">路由 + 分解</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">📊</div>
+        <div class="step-title">损失回传</div>
+        <div class="step-label">STE 绕过不可导</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="step-icon">⚡</div>
+        <div class="step-title">INT8 推理</div>
+        <div class="step-label">真实加速</div>
+      </div>
+    </div>
+
+    <h3>实验结果</h3>
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val val-orange">97%</div><div class="metric-label">注意力稀疏度</div></div>
+      <div class="metric"><div class="metric-val val-orange">18.6×</div><div class="metric-label">注意力模块加速</div></div>
+      <div class="metric"><div class="metric-val val-orange">↑35%</div><div class="metric-label">相比 SLA 额外提升</div></div>
+      <div class="metric"><div class="metric-val val-orange">≈0</div><div class="metric-label">FVD 质量损失</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §6  SLA vs SLA2
+══════════════════════════════════════ -->
+<section id="sla-compare">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-green">⚖️</div>
+      <div>
+        <h2>SLA vs SLA2 深度对比</h2>
+      </div>
+    </div>
+
+    <div class="card" style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>维度</th>
+            <th>SLA</th>
+            <th>SLA2</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>块路由方式</strong></td>
+            <td class="partial">启发式（注意力权重幅值阈值）</td>
+            <td class="yes">可学习路由器（轻量 MLP，预测路由）</td>
+          </tr>
+          <tr>
+            <td><strong>分解忠实性</strong></td>
+            <td class="partial">近似（存在系统性偏差）</td>
+            <td class="yes">严格分解 + 可学习混合比 α</td>
+          </tr>
+          <tr>
+            <td><strong>量化</strong></td>
+            <td class="no">无（BF16）</td>
+            <td class="yes">QAT（INT8 推理）</td>
+          </tr>
+          <tr>
+            <td><strong>可达稀疏度</strong></td>
+            <td>~95%</td>
+            <td class="yes">~97%</td>
+          </tr>
+          <tr>
+            <td><strong>注意力加速</strong></td>
+            <td>13.7×</td>
+            <td class="yes">18.6×</td>
+          </tr>
+          <tr>
+            <td><strong>训练参数量</strong></td>
+            <td>原模型参数</td>
+            <td>原参数 + 路由器参数（可忽略）+ α</td>
+          </tr>
+          <tr>
+            <td><strong>阈值调参</strong></td>
+            <td class="no">需手工调 τ_low, τ_high</td>
+            <td class="yes">端到端学习，无需手工阈值</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>演进关系</h3>
+    <div class="formula-block green">
+      <div class="formula-label">SLA 注意力</div>
+      <span class="math-green">Output = Σ_blocks { Critical: FlashAttn | Marginal: LinearAttn | Skip }</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">块分类依据：A_ij 的幅值与手工阈值比较</span>
+    </div>
+    <div class="formula-block orange">
+      <div class="formula-label">SLA2 注意力</div>
+      <span class="math-orange">Output = R(Q,K) · FlashAttn(Q,K,V) + (1−R(Q,K)) · LinearAttn(Q,K,V)</span><br>
+      <span style="color:var(--text-dim);font-size:0.85em">路由由 R(·) 端到端学习，混合比 α 可学习，INT8 量化</span>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ══════════════════════════════════════
+     §7  SYNTHESIS
+══════════════════════════════════════ -->
+<section id="synthesis">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-icon icon-purple">🔭</div>
+      <div>
+        <h2>综合视角：联合方向与研究机会</h2>
+      </div>
+    </div>
+
+    <h3>两条线的正交性</h3>
+    <p>DMD/DMD2 和 SLA/SLA2 从不同维度压缩了视频生成的计算量，且几乎不互相干扰：</p>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px;text-align:center">
+          <div style="font-size:2rem;font-weight:700;color:var(--accent-purple)">DMD2</div>
+          <div style="color:var(--text-muted);font-size:0.85rem">步数：50 → 1~4 步<br>每步成本不变</div>
+        </div>
+        <div style="font-size:1.5rem;color:var(--text-dim)">✕</div>
+        <div style="flex:1;min-width:200px;text-align:center">
+          <div style="font-size:2rem;font-weight:700;color:var(--accent-orange)">SLA2</div>
+          <div style="color:var(--text-muted);font-size:0.85rem">每步注意力：18.6× 加速<br>步数不变</div>
+        </div>
+        <div style="font-size:1.5rem;color:var(--text-dim)">=</div>
+        <div style="flex:1;min-width:200px;text-align:center;background:rgba(155,109,255,.1);border:1px solid rgba(155,109,255,.3);border-radius:10px;padding:16px">
+          <div style="font-size:2rem;font-weight:700;color:var(--accent-green)">50×~90×+</div>
+          <div style="color:var(--text-muted);font-size:0.85rem">理论端到端综合加速<br>（步数 × 每步注意力）</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>联合训练的挑战</h3>
+    <div class="insight-grid">
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-blue)">损失冲突</div>
+        <p>DMD2 的分布匹配损失梯度作用在输出 token 上，SLA2 的蒸馏损失作用在注意力中间层。联合优化时梯度尺度需要仔细权衡。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-purple)">教师选择</div>
+        <p>联合蒸馏的"教师"是谁？可选：① 完整步数 + 完整注意力教师；② 少步但完整注意力教师。后者将 SLA2 的问题简化为注意力替换。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-green)">训练顺序</div>
+        <p>先做 SLA2（注意力压缩），再在压缩后的模型上做 DMD2（步数压缩）可能比联合训练更稳定，且每阶段目标清晰。</p>
+      </div>
+      <div class="insight">
+        <div class="insight-title" style="color:var(--accent-orange)">反向模拟兼容性</div>
+        <p>DMD2 的 backward simulation 在 SLA2 的近似注意力下是否稳定？需要验证多步展开时近似误差不会累积爆炸。</p>
+      </div>
+    </div>
+
+    <h3>近期相关扩展工作（值得跟踪）</h3>
+    <div class="card" style="overflow-x:auto">
+      <table class="compare-table">
+        <thead>
+          <tr><th>论文</th><th>方向</th><th>与本研究线的关系</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="https://arxiv.org/abs/2511.01419">Adversarial Self-Distillation (2511.01419)</a></td>
+            <td>视频 DiT 对抗自蒸馏</td>
+            <td>DMD2 思路延伸至因果视频生成</td>
+          </tr>
+          <tr>
+            <td><a href="https://arxiv.org/abs/2601.09881">Transition Matching Distillation (2601.09881)</a></td>
+            <td>快速视频生成蒸馏</td>
+            <td>步数蒸馏的最新进展，与 DMD2 直接竞争</td>
+          </tr>
+          <tr>
+            <td><a href="https://arxiv.org/abs/2412.15689">DOLLAR (2412.15689)</a></td>
+            <td>少步 + 奖励优化</td>
+            <td>在 DMD2 基础上加入人类偏好对齐</td>
+          </tr>
+          <tr>
+            <td><a href="https://arxiv.org/abs/2603.08982">SVG-EAR (2603.08982)</a></td>
+            <td>稀疏视频生成误差路由</td>
+            <td>SLA 系列的补充，误差感知路由</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>研究前沿建议</h3>
+    <div class="callout callout-purple">
+      <div class="callout-icon">🎯</div>
+      <div class="callout-text">
+        <strong>最高价值研究方向：</strong>在 SLA2 稀疏注意力骨干上实现 DMD2 风格的步数蒸馏。具体路径是：①先用 SLA2 微调得到注意力压缩的 teacher-equivalent 模型；②用该模型作为蒸馏教师，应用 DMD2 的 GAN loss + backward simulation 做步数蒸馏；③验证在 1-2 步生成下注意力稀疏度能否维持 ≥95%。
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>基于 arXiv 2311.18828 · 2405.14867 · 2509.24006 · 2602.12675 整理</div>
+  <div style="margin-top:6px">DMD / DMD2 (MIT + Adobe) · SLA / SLA2 (清华大学 + UC Berkeley)</div>
+</footer>
+
+</body>
+</html>
