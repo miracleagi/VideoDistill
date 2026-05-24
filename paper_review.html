@@ -20,24 +20,1107 @@ a{color:var(--blue);text-decoration:none}
 a:hover{text-decoration:underline}
 strong{color:#eef2ff}
 em{color:var(--cyan);font-style:normal}
+
+/* ─── header ─── */
+.hero{
+  background:linear-gradient(160deg,#090d1e 0%,#0f1530 50%,#090d1e 100%);
+  border-bottom:1px solid var(--border);
+  padding:56px 40px 44px; text-align:center;
+}
+.hero h1{font-size:2.2rem;font-weight:800;letter-spacing:-.02em;
+  background:linear-gradient(100deg,var(--blue),var(--purple),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px}
+.hero .sub{color:var(--muted);font-size:.95rem;max-width:680px;margin:0 auto 20px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{padding:3px 11px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.b-blue{background:rgba(79,142,247,.12);color:var(--blue);border:1px solid rgba(79,142,247,.3)}
+.b-purple{background:rgba(155,109,255,.12);color:var(--purple);border:1px solid rgba(155,109,255,.3)}
+.b-green{background:rgba(62,207,142,.12);color:var(--green);border:1px solid rgba(62,207,142,.3)}
+.b-orange{background:rgba(255,159,67,.12);color:var(--orange);border:1px solid rgba(255,159,67,.3)}
+.b-cyan{background:rgba(0,210,255,.1);color:var(--cyan);border:1px solid rgba(0,210,255,.25)}
+
+/* ─── layout ─── */
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+.divider{height:1px;background:var(--border);max-width:1120px;margin:0 28px}
+
+/* ─── TOC ─── */
+.toc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 32px;margin:36px 28px}
+.toc-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:14px;font-weight:700}
+.toc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 40px}
+.toc-grid a{color:var(--text);font-size:.88rem;padding:4px 0;display:block;border-bottom:1px solid transparent}
+.toc-grid a:hover{color:var(--blue);text-decoration:none}
+.toc-num{color:var(--dim);margin-right:7px;font-variant-numeric:tabular-nums;font-size:.82rem}
+
+/* ─── section ─── */
+section{padding:52px 0 20px}
+.s-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:32px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.s-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;margin-top:2px}
+.ic-blue{background:rgba(79,142,247,.15)}
+.ic-purple{background:rgba(155,109,255,.15)}
+.ic-green{background:rgba(62,207,142,.15)}
+.ic-orange{background:rgba(255,159,67,.15)}
+.ic-cyan{background:rgba(0,210,255,.12)}
+.s-head h2{font-size:1.5rem;font-weight:700;line-height:1.25}
+.s-head .meta{font-size:.8rem;color:var(--muted);margin-top:5px}
+.s-head .meta a{color:var(--blue)}
+
+h3{font-size:1.02rem;font-weight:700;color:#c8d0f0;margin:30px 0 12px}
+h4{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:18px 0 8px}
+p{margin-bottom:13px}
+
+/* ─── code blocks ─── */
+pre{
+  background:var(--code);border:1px solid var(--border);border-radius:10px;
+  padding:20px 22px;overflow-x:auto;font-size:.82rem;line-height:1.65;
+  font-family:'Cascadia Code','Fira Code',Consolas,monospace;
+  margin:16px 0;
+}
+code{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:.83em;
+  background:rgba(255,255,255,.06);border-radius:4px;padding:1px 5px}
+pre code{background:none;padding:0;font-size:1em}
+.line-comment{color:#4a5578}
+.line-key{color:var(--purple)}
+.line-val{color:var(--green)}
+.line-fn{color:var(--blue)}
+.line-kw{color:var(--orange)}
+.line-str{color:#e5c07b}
+.line-num{color:var(--cyan)}
+.line-hi{background:rgba(79,142,247,.08);display:block;margin:0 -22px;padding:0 22px}
+
+/* ─── formula ─── */
+.fblock{
+  background:var(--code);border:1px solid var(--border);
+  border-left:3px solid var(--blue);border-radius:9px;
+  padding:16px 20px;margin:16px 0;
+  font-family:'Cascadia Code','Fira Code',Consolas,monospace;
+  font-size:.88rem;line-height:2;overflow-x:auto;
+}
+.fblock.purple{border-left-color:var(--purple)}
+.fblock.green{border-left-color:var(--green)}
+.fblock.orange{border-left-color:var(--orange)}
+.fblock.cyan{border-left-color:var(--cyan)}
+.flabel{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--dim);margin-bottom:6px;font-family:'Segoe UI',system-ui,sans-serif}
+.fc-b{color:var(--blue)} .fc-p{color:var(--purple)} .fc-g{color:var(--green)}
+.fc-o{color:var(--orange)} .fc-c{color:var(--cyan)} .fc-y{color:var(--yellow)}
+
+/* ─── cards ─── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin-bottom:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:720px){.g2,.g3{grid-template-columns:1fr}.toc-grid{grid-template-columns:1fr}}
+
+/* ─── callout ─── */
+.note{border-radius:10px;padding:14px 18px;margin:16px 0;display:flex;gap:12px;align-items:flex-start}
+.n-blue{background:rgba(79,142,247,.09);border:1px solid rgba(79,142,247,.2)}
+.n-purple{background:rgba(155,109,255,.09);border:1px solid rgba(155,109,255,.2)}
+.n-green{background:rgba(62,207,142,.09);border:1px solid rgba(62,207,142,.2)}
+.n-orange{background:rgba(255,159,67,.09);border:1px solid rgba(255,159,67,.2)}
+.n-red{background:rgba(255,107,107,.09);border:1px solid rgba(255,107,107,.2)}
+.n-cyan{background:rgba(0,210,255,.08);border:1px solid rgba(0,210,255,.18)}
+.ni{font-size:1rem;flex-shrink:0;margin-top:1px}
+.nt{font-size:.88rem;line-height:1.65}
+.nt strong{color:var(--text)}
+
+/* ─── metrics ─── */
+.metrics{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.metric{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:12px 18px;min-width:115px}
+.mv{font-size:1.6rem;font-weight:800;line-height:1}
+.ml{font-size:.68rem;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
+.mv-b{color:var(--blue)}.mv-p{color:var(--purple)}.mv-g{color:var(--green)}.mv-o{color:var(--orange)}.mv-c{color:var(--cyan)}
+
+/* ─── table ─── */
+.tbl{width:100%;border-collapse:collapse;font-size:.86rem;margin:16px 0}
+.tbl th{padding:10px 14px;text-align:left;background:var(--surface2);border-bottom:1px solid var(--border);
+  color:var(--muted);font-weight:700;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+.tbl td{padding:10px 14px;border-bottom:1px solid rgba(39,45,69,.5);vertical-align:top;line-height:1.55}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(79,142,247,.03)}
+.yes{color:var(--green);font-weight:600}.no{color:var(--red)}.ok{color:var(--orange)}
+
+/* ─── pipeline ─── */
+.pipe{display:flex;margin:18px 0;overflow-x:auto;gap:0}
+.ps{flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);
+  padding:14px 12px;text-align:center;position:relative}
+.ps:first-child{border-radius:10px 0 0 10px}
+.ps:last-child{border-radius:0 10px 10px 0}
+.ps+.ps{border-left:none}
+.ps::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);
+  color:var(--dim);z-index:1;font-size:1rem}
+.ps:last-child::after{display:none}
+.pe{font-size:1.2rem;margin-bottom:5px}
+.pt{font-size:.8rem;font-weight:700;margin-bottom:3px;color:var(--text)}
+.pd{font-size:.72rem;color:var(--muted);line-height:1.4}
+
+/* ─── impl box ─── */
+.impl{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:0;overflow:hidden;margin:18px 0}
+.impl-head{background:var(--surface3);padding:12px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.impl-head .dot{width:8px;height:8px;border-radius:50%}
+.impl-title{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.impl pre{border-radius:0;border:none;margin:0}
+
+/* ─── step list ─── */
+.steps{counter-reset:step;margin:16px 0}
+.step{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.step::before{
+  counter-increment:step;content:counter(step);
+  background:rgba(79,142,247,.15);color:var(--blue);
+  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:.78rem;font-weight:800;flex-shrink:0;margin-top:2px;
+}
+.step.purple::before{background:rgba(155,109,255,.15);color:var(--purple)}
+.step.green::before{background:rgba(62,207,142,.15);color:var(--green)}
+.step.orange::before{background:rgba(255,159,67,.15);color:var(--orange)}
+.step-body{flex:1;font-size:.88rem;line-height:1.65}
+.step-body strong{color:var(--text)}
+
+/* ─── adapt checklist ─── */
+.checklist{list-style:none;margin:14px 0}
+.checklist li{padding:7px 0;border-bottom:1px solid var(--border2);display:flex;gap:10px;font-size:.88rem;align-items:flex-start}
+.checklist li:last-child{border-bottom:none}
+.chk{color:var(--green);flex-shrink:0;font-size:.9rem}
+.chk-o{color:var(--orange);flex-shrink:0}
+.chk-r{color:var(--red);flex-shrink:0}
+
+/* ─── comparison strip ─── */
+.vs{display:flex;gap:0;margin:20px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.vs-left,.vs-right{flex:1;padding:20px}
+.vs-left{background:rgba(79,142,247,.05);border-right:1px solid var(--border)}
+.vs-right{background:rgba(155,109,255,.05)}
+.vs-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.vs-title.b{color:var(--blue)}.vs-title.p{color:var(--purple)}.vs-title.g{color:var(--green)}.vs-title.o{color:var(--orange)}
+
+/* ─── footer ─── */
+footer{border-top:1px solid var(--border);padding:32px 28px;text-align:center;color:var(--dim);font-size:.8rem;margin-top:60px}
 </style>
 </head>
 <body>
-<header style="background:linear-gradient(160deg,#090d1e 0%,#0f1530 50%,#090d1e 100%);border-bottom:1px solid #272d45;padding:56px 40px 44px;text-align:center">
-  <h1 style="font-size:2.2rem;font-weight:800;background:linear-gradient(100deg,#4f8ef7,#9b6dff,#00d2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px">实现级深度解读：DMD / DMD2 / SLA / SLA2</h1>
-  <p style="color:#6b7499;font-size:.95rem;max-width:680px;margin:0 auto 20px">面向在自有 base model 上落地适配的完整技术图谱 —— 含训练算法、损失公式、超参数、代码结构与迁移清单</p>
+
+<header class="hero">
+  <h1>实现级深度解读：DMD / DMD2 / SLA / SLA2</h1>
+  <p class="sub">面向在自有 base model 上落地适配的完整技术图谱 —— 含训练算法、损失公式、超参数、代码结构与迁移清单</p>
+  <div class="badges">
+    <span class="badge b-blue">步数蒸馏</span>
+    <span class="badge b-purple">分布匹配</span>
+    <span class="badge b-green">稀疏注意力</span>
+    <span class="badge b-orange">视频 DiT</span>
+    <span class="badge b-cyan">实现指南</span>
+  </div>
 </header>
-<div style="max-width:900px;margin:40px auto;padding:0 28px;color:#dde3f5">
-  <p style="margin-bottom:16px">本文件为完整 HTML 版本，请从仓库下载后在浏览器中打开以获得最佳阅读体验。</p>
-  <h2 style="font-size:1.3rem;margin:24px 0 12px;color:#9b6dff">覆盖内容</h2>
-  <ul style="padding-left:20px;line-height:2">
-    <li><strong>DMD</strong>：KL 散度梯度推导、fake/real score 训练目标、完整训练伪代码、关键超参数</li>
-    <li><strong>DMD2</strong>：GAN loss 替代回归损失、两时间尺度更新、Backward Simulation（含 Cosmos 实现）、CFG 蒸馏</li>
-    <li><strong>SLA</strong>：注意力权重二元结构、块三分类算法（kh%=5%/kl%=10%）、ELU 线性核、微调蒸馏流程</li>
-    <li><strong>SLA2</strong>：可学习路由器 MLP、STE 梯度、忠实稀疏-线性分解、QAT fake quantization 实现</li>
-    <li><strong>适配指南</strong>：分阶段落地路径、8 种高频踩坑与解法、各 base model 架构对照表</li>
-  </ul>
-  <p style="margin-top:24px;color:#6b7499;font-size:.85rem">基于 arXiv 2311.18828 · 2405.14867 · 2509.24006 · 2602.12675 及 NVIDIA Cosmos 工程实现整理</p>
+
+<nav class="toc">
+  <div class="toc-title">目录</div>
+  <div class="toc-grid">
+    <div>
+      <a href="#landscape"><span class="toc-num">0.</span>全局架构与两条技术线</a>
+      <a href="#dmd"><span class="toc-num">1.</span>DMD — 公式 · 算法 · 超参</a>
+      <a href="#dmd2"><span class="toc-num">2.</span>DMD2 — 三项改进深度拆解</a>
+      <a href="#dmd-impl"><span class="toc-num">3.</span>DMD/DMD2 适配自有模型</a>
+    </div>
+    <div>
+      <a href="#sla"><span class="toc-num">4.</span>SLA — 块分类 · 线性核 · 微调</a>
+      <a href="#sla2"><span class="toc-num">5.</span>SLA2 — 路由器 · 忠实分解 · QAT</a>
+      <a href="#sla-impl"><span class="toc-num">6.</span>SLA/SLA2 适配自有模型</a>
+      <a href="#joint"><span class="toc-num">7.</span>联合方案 · 踩坑与建议</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════════════ §0 LANDSCAPE ══════════════════════════ -->
+<section id="landscape">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-cyan">🗺️</div>
+  <div><h2>全局架构：两条正交技术线</h2><div class="meta">读懂整体脉络，再看局部细节</div></div>
 </div>
+
+<p>视频生成的端到端延迟由两个因素决定：<strong>推理步数 N</strong> 和<strong>每步计算量 C</strong>。两条研究线各自压缩一个维度，且互不干扰：</p>
+
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>维度</th><th>DMD 系列</th><th>SLA 系列</th><th>联合效果</th></tr></thead>
+<tbody>
+<tr><td><strong>作用对象</strong></td><td>采样步数 N</td><td>每步注意力计算量</td><td>两者相乘</td></tr>
+<tr><td><strong>压缩倍率</strong></td><td>50→1~4 步（12~50×）</td><td>注意力 13.7~18.6×</td><td>理论 180×~900×</td></tr>
+<tr><td><strong>改动的代码位置</strong></td><td>推理 scheduler + 训练 loss</td><td>每个 attention module</td><td>可独立叠加</td></tr>
+<tr><td><strong>需要额外模型</strong></td><td>fake score 网络 + 判别器</td><td>无（只加轻量路由器）</td><td>—</td></tr>
+<tr><td><strong>训练数据</strong></td><td>真实数据（DMD2 无需配对）</td><td>~2万条视频（微调）</td><td>可复用</td></tr>
+<tr><td><strong>训练成本</strong></td><td>中高（需要 teacher 在线推理）</td><td>低（2000步微调）</td><td>分阶段串行</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note n-cyan">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>推荐落地顺序：</strong>先做 SLA2（改动小、风险低、2000步收敛），验证 base model 质量无损后，再在压缩后的模型上做 DMD2 蒸馏。两阶段独立，失败可回滚。</div>
+</div>
+
+<p>下面各节的结构统一为：<strong>① 核心数学</strong> → <strong>② 完整训练算法</strong> → <strong>③ 关键超参数</strong> → <strong>④ 适配自有模型的改动清单</strong>。</p>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §1 DMD ══════════════════════════ -->
+<section id="dmd">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-blue">⚗️</div>
+  <div>
+    <h2>DMD：One-step Diffusion with Distribution Matching Distillation</h2>
+    <div class="meta"><a href="https://arxiv.org/abs/2311.18828">arXiv 2311.18828</a> · CVPR 2024 · Tianwei Yin (MIT + Adobe)</div>
+  </div>
+</div>
+
+<h3>1.1 核心数学：KL 散度的 score 差分梯度</h3>
+<p>设学生生成器 G（参数 θ）将高斯噪声 z 映射到图像/视频 x̂ = G(z;θ)，其输出分布为 p_G。目标是最小化：</p>
+
+<div class="fblock">
+  <div class="flabel">目标</div>
+  <span class="fc-b">min<sub>θ</sub></span> D_KL(<span class="fc-b">p_G</span> ‖ <span class="fc-g">p_data</span>)
+</div>
+
+<p>对 θ 求梯度，利用 log p 对参数的链式法则展开：</p>
+
+<div class="fblock">
+  <div class="flabel">KL 梯度（关键推导）</div>
+  ∇<sub>θ</sub> D_KL = E<sub>x̂~p_G</sub>[ (<span class="fc-b">∇<sub>x</sub> log p_G(x̂)</span> − <span class="fc-g">∇<sub>x</sub> log p_data(x̂)</span>) · ∂x̂/∂θ ]<br><br>
+  = E<sub>x̂~p_G</sub>[ (<span class="fc-b">s_fake(x̂,t)</span> − <span class="fc-g">s_real(x̂,t)</span>) · ∂G/∂θ ]<br><br>
+  <span style="color:var(--dim);font-size:.82em">
+  s_fake = ∇<sub>x</sub> log p_G（学生输出分布的 score，用一个独立扩散模型拟合）<br>
+  s_real = ∇<sub>x</sub> log p_data（真实数据分布的 score，用教师模型初始化后固定）
+  </span>
+</div>
+
+<div class="note n-blue">
+  <div class="ni">🔑</div>
+  <div class="nt"><strong>核心技巧：</strong>两个 score 的差天然是对 G 的梯度信号，不需要显式的密度函数。s_real 用教师模型初始化（权重复制），然后冻结；s_fake 需要跟随 G 的输出分布实时更新。</div>
+</div>
+
+<h3>1.2 总损失（含回归正则项）</h3>
+
+<div class="fblock">
+  <div class="flabel">DMD 总损失</div>
+  <span class="fc-b">L_DM</span> = E<sub>x̂~G(z), t~U[0,T]</sub>[ ‖<span class="fc-b">s_fake</span>(x̂ + σ_t·ε, t) − <span class="fc-g">s_real</span>(x̂ + σ_t·ε, t)‖² ]<br><br>
+  <span class="fc-o">L_reg</span> = E<sub>z, x*=DDIM_teacher(z)</sub>[ ‖G(z) − x*‖² ]<br><br>
+  <span class="fc-y">L_total</span> = <span class="fc-b">L_DM</span> + λ·<span class="fc-o">L_reg</span>&nbsp;&nbsp;&nbsp;<span style="color:var(--dim);font-size:.85em">（λ 论文中约 0.05~0.1）</span>
+</div>
+
+<h3>1.3 Fake Score 模型的训练</h3>
+<p>s_fake 必须实时跟踪当前 G 的输出分布，否则梯度估计偏差会导致 G 更新方向错误。用标准 score matching 在 G 的输出上训练：</p>
+
+<div class="fblock purple">
+  <div class="flabel">Fake Score 更新目标</div>
+  <span class="fc-p">L_score</span> = E<sub>t, x̂=G(z), ε~N(0,I)</sub>[ ‖<span class="fc-p">s_fake</span>(x̂ + σ_t·ε, t) + ε/σ_t‖² ]<br><br>
+  <span style="color:var(--dim);font-size:.82em">等价于：让 s_fake 学会从加了噪声的学生输出预测原始噪声（标准去噪目标）</span>
+</div>
+
+<h3>1.4 完整训练算法（伪代码）</h3>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div>
+    <div class="dot" style="background:var(--yellow)"></div>
+    <div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">DMD 训练循环</span>
+  </div>
+<pre><span class="line-comment"># 初始化</span>
+<span class="line-key">G</span>          = <span class="line-fn">copy_weights</span>(teacher)   <span class="line-comment"># 学生生成器，LoRA 或全参数</span>
+<span class="line-key">s_fake</span>     = <span class="line-fn">copy_weights</span>(teacher)   <span class="line-comment"># fake score 网络，全参数</span>
+<span class="line-key">s_real</span>     = <span class="line-fn">copy_weights</span>(teacher)   <span class="line-comment"># 真实 score 网络，冻结</span>
+<span class="line-key">precomputed</span> = <span class="line-fn">ddim_sample</span>(teacher, dataset)  <span class="line-comment"># 提前生成 (z, x*) 配对</span>
+
+<span class="line-kw">for</span> step <span class="line-kw">in</span> <span class="line-fn">range</span>(max_steps):
+
+    <span class="line-comment"># ── 阶段1：更新 G ──────────────────</span>
+    z = <span class="line-fn">sample_noise</span>(batch_size)
+    x_hat = <span class="line-fn">G</span>(z)                         <span class="line-comment"># 一步生成</span>
+
+    t = <span class="line-fn">sample_timestep</span>()
+    ε = <span class="line-fn">sample_noise</span>(batch_size)
+    x_noisy = x_hat + σ[t] * ε
+
+    grad_dm = <span class="line-fn">s_fake</span>(x_noisy, t) - <span class="line-fn">s_real</span>(x_noisy, t)
+    <span class="line-comment"># 用 grad_dm 当作梯度（不反传 score 网络）</span>
+    x_hat.<span class="line-fn">backward</span>(grad_dm)
+
+    x_star = <span class="line-fn">lookup</span>(precomputed, z)    <span class="line-comment"># 取出对应的教师多步输出</span>
+    loss_reg = <span class="line-fn">mse</span>(x_hat, x_star)
+    loss_reg.<span class="line-fn">backward</span>()
+
+    <span class="line-fn">optimizer_G</span>.<span class="line-fn">step</span>()
+
+    <span class="line-comment"># ── 阶段2：更新 fake score（更频繁）──</span>
+    <span class="line-kw">for</span> _ <span class="line-kw">in</span> <span class="line-fn">range</span>(k_critic):          <span class="line-comment"># k_critic ≥ 1</span>
+        z = <span class="line-fn">sample_noise</span>(batch_size)
+        x_hat = <span class="line-fn">G</span>(z).<span class="line-fn">detach</span>()         <span class="line-comment"># 不回传到 G</span>
+        t = <span class="line-fn">sample_timestep</span>()
+        ε = <span class="line-fn">sample_noise</span>(batch_size)
+        x_noisy = x_hat + σ[t] * ε
+
+        loss_score = <span class="line-fn">mse</span>(<span class="line-fn">s_fake</span>(x_noisy, t), -ε / σ[t])
+        loss_score.<span class="line-fn">backward</span>()
+        <span class="line-fn">optimizer_fake</span>.<span class="line-fn">step</span>()</pre>
+</div>
+
+<h3>1.5 关键超参数</h3>
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>超参数</th><th>ImageNet-64</th><th>SDXL (参考)</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>批大小</td><td>64</td><td>64</td><td>每个设备 batch_size</td></tr>
+<tr><td>Generator LR</td><td>5e-5</td><td>5e-5</td><td>LoRA rank=64, alpha=8</td></tr>
+<tr><td>Fake Score LR</td><td>4e-7</td><td>4e-7</td><td>全参数微调</td></tr>
+<tr><td>Real Score LR</td><td>0（冻结）</td><td>0（冻结）</td><td>只做推理</td></tr>
+<tr><td>λ (reg weight)</td><td>0.05~0.1</td><td>—</td><td>回归损失权重</td></tr>
+<tr><td>预生成步数</td><td>DDIM 50步</td><td>DDIM 50步</td><td>教师配对数据集</td></tr>
+<tr><td>Fake Score 更新频率</td><td>1:1 或 2:1</td><td>1:1</td><td>相对于 G 的更新比</td></tr>
+<tr><td>推理步数 T_student</td><td>1</td><td>1</td><td>固定单步</td></tr>
+<tr><td>学生 timestep</td><td>手动定义（如 T=999）</td><td>—</td><td>不用 scheduler</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §2 DMD2 ══════════════════════════ -->
+<section id="dmd2">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-purple">🚀</div>
+  <div>
+    <h2>DMD2：三大改进的精确机制</h2>
+    <div class="meta"><a href="https://arxiv.org/abs/2405.14867">arXiv 2405.14867</a> · NeurIPS 2024 Oral · Tianwei Yin et al.</div>
+  </div>
+</div>
+
+<h3>2.1 改进① — 去除回归损失，引入 GAN 判别器</h3>
+
+<p>DMD 的 L_reg 需要提前用教师运行数万次 DDIM 50步采样，在大分辨率下成本不可接受。DMD2 用 GAN 判别器替代：</p>
+
+<div class="fblock purple">
+  <div class="flabel">DMD2 总损失（无 L_reg）</div>
+  <span class="fc-p">L_total</span> = <span class="fc-b">L_DM</span> + λ·<span class="fc-p">L_GAN</span><br><br>
+  <span class="fc-b">L_DM</span> = E[ ‖s_fake(G(z)+noise, t) − s_real(G(z)+noise, t)‖² ]<br><br>
+  <span class="fc-p">L_GAN(G)</span> = −E<sub>x̂~G</sub>[ D(x̂) ]<br>
+  <span class="fc-p">L_GAN(D)</span> = E<sub>x~data</sub>[max(0, 1−D(x))] + E<sub>x̂~G</sub>[max(0, 1+D(x̂))]<br><br>
+  <span style="color:var(--dim);font-size:.82em">判别器 D 可复用 s_fake 的特征提取部分，<strong>不引入新参数</strong></span>
+</div>
+
+<div class="note n-purple">
+  <div class="ni">🔍</div>
+  <div class="nt"><strong>为什么 GAN loss 效果更好？</strong>GAN 判别器直接在真实数据上训练，对 s_real 估计偏差不敏感（它不依赖 s_real）。而 L_reg 的梯度方向依赖教师 DDIM 轨迹，这条轨迹并不能代表真实数据分布的全貌。</div>
+</div>
+
+<h3>2.2 改进② — 两时间尺度更新规则（Two Time-Scale Update Rule）</h3>
+
+<p>去掉 L_reg 后，系统变得不稳定：G 一旦跑偏，s_fake 来不及追踪，产生错误梯度，形成正反馈发散。解法是让 s_fake 的更新速度远快于 G：</p>
+
+<div class="g2">
+<div class="card">
+<h4 style="color:var(--blue)">学生生成器 G</h4>
+<div class="fblock" style="margin-top:8px">
+  <span class="fc-b">η_G = 5e-5</span><br>
+  更新步：每个 step 1次<br>
+  参数量：LoRA (rank 64)
+</div>
+<p style="font-size:.86rem;color:var(--muted)">更新慢，保证 s_fake 有余量追踪当前 p_G</p>
+</div>
+<div class="card">
+<h4 style="color:var(--purple)">Fake Score / Critic</h4>
+<div class="fblock purple" style="margin-top:8px">
+  <span class="fc-p">η_fake = 4e-6 ~ 1e-5</span><br>
+  更新步：每个 step 多次<br>
+  参数量：全参数
+</div>
+<p style="font-size:.86rem;color:var(--muted)">更新快（约 G 的 10~100 倍），实时追踪 p_G 变化</p>
+</div>
+</div>
+
+<div class="note n-orange">
+  <div class="ni">⚠️</div>
+  <div class="nt"><strong>工程陷阱：</strong>两个网络的学习率比值比绝对值更重要。比值建议从 10 开始，观察 fake score loss 是否先于 G loss 收敛——如果 fake score loss 还未收敛时 G 已经开始更新，说明比值太小。</div>
+</div>
+
+<h3>2.3 改进③ — Backward Simulation（反向模拟）</h3>
+
+<p>DMD 训练时学生输入 = 纯高斯噪声 z，但多步推理的第 2、3、4 步输入是前一步学生输出再加噪。这个分布差异（train-test mismatch）使多步蒸馏质量降级。</p>
+
+<p>Backward simulation 在训练时模拟完整的多步推理链：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">Backward Simulation 伪代码（来自 NVIDIA Cosmos 实现）</span>
+  </div>
+<pre><span class="line-kw">def</span> <span class="line-fn">training_step_critic</span>(batch, student, critic, cfg):
+    <span class="line-comment"># 反向模拟：从当前时间步推若干步</span>
+    x = batch[<span class="line-str">'latent'</span>]
+    <span class="line-kw">with</span> <span class="line-fn">torch.no_grad</span>():
+        <span class="line-kw">for</span> t <span class="line-kw">in</span> <span class="line-fn">get_backward_steps</span>(cfg.num_backward_steps):
+            <span class="line-comment"># 学生去一步噪声</span>
+            x_denoised = <span class="line-fn">student</span>(x, t, condition)
+            <span class="line-comment"># 重新加噪到下一个时间步（backward simulation 核心）</span>
+            x = <span class="line-fn">re_noise</span>(x_denoised, t_next)
+
+    <span class="line-comment"># 在 backward-simulated 分布上训练 critic</span>
+    loss_critic = <span class="line-fn">score_matching_loss</span>(critic, x, t)
+    <span class="line-kw">return</span> loss_critic
+
+<span class="line-kw">def</span> <span class="line-fn">training_step_generator</span>(batch, student, critic, teacher, cfg):
+    <span class="line-comment"># student 生成（此处可以是多步）</span>
+    z = <span class="line-fn">sample_noise</span>(batch)
+    x_hat = <span class="line-fn">multi_step_student</span>(student, z, cfg.num_student_steps)
+
+    <span class="line-comment"># teacher CFG 目标（distill CFG 进 student）</span>
+    t = <span class="line-fn">sample_timestep</span>()
+    x_noisy = <span class="line-fn">add_noise</span>(x_hat, t)
+    s_real_cond   = <span class="line-fn">teacher</span>(x_noisy, t, condition=cond)
+    s_real_uncond = <span class="line-fn">teacher</span>(x_noisy, t, condition=uncond)
+    s_real = s_real_uncond + cfg_scale * (s_real_cond - s_real_uncond)
+
+    <span class="line-comment"># 分布匹配梯度</span>
+    s_fake = <span class="line-fn">critic</span>(x_noisy, t)
+    grad_dm = s_fake - s_real
+
+    <span class="line-comment"># GAN 梯度</span>
+    loss_gan = -<span class="line-fn">discriminator</span>(x_hat).<span class="line-fn">mean</span>()
+
+    <span class="line-comment"># 合并（DM 梯度直接注入，GAN 梯度正常反传）</span>
+    x_hat.<span class="line-fn">backward</span>(grad_dm * cfg.dm_weight)
+    loss_gan.<span class="line-fn">backward</span>()
+
+    <span class="line-kw">return</span> grad_dm.<span class="line-fn">norm</span>(), loss_gan</pre>
+</div>
+
+<h3>2.4 CFG 蒸馏（额外 2× 加速）</h3>
+<p>DMD2 将教师的 Classifier-Free Guidance（CFG）行为蒸馏进学生，使学生推理时不需要跑两次前向（条件 + 无条件）：</p>
+
+<div class="fblock purple">
+  <div class="flabel">CFG 蒸馏目标</div>
+  <span class="fc-p">s_real_cfg</span>(x,t,c) = s_teacher(x,t,∅) + ω·(s_teacher(x,t,c) − s_teacher(x,t,∅))<br><br>
+  <span style="color:var(--dim);font-size:.82em">用这个 CFG-combined score 作为 s_real 目标，学生学会"一次前向输出 CFG 效果"<br>推理时不再需要无条件前向，额外节省 2× 计算</span>
+</div>
+
+<h3>2.5 TrigFlow 参数化（来自 Cosmos 实现）</h3>
+<p>Cosmos DMD2 实现使用 TrigFlow 作为统一参数化（来源于 sCM 论文），对视频 DiT 的时间步嵌入和噪声 schedule 均有影响：</p>
+
+<div class="fblock cyan">
+  <div class="flabel">TrigFlow 时间步参数化</div>
+  <span class="fc-c">σ(t) = sin(t)</span>&nbsp;&nbsp;（代替 DDPM 的指数噪声 schedule）<br>
+  <span class="fc-c">α(t) = cos(t)</span>&nbsp;&nbsp;t ∈ [0, π/2]<br><br>
+  student 推理时间步：<span class="fc-c">手动定义</span>，如 [T, 0.5T, 0.1T] 三步<br>
+  不依赖第三方 scheduler（避免 mismatch）
+</div>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §3 DMD IMPL ══════════════════════════ -->
+<section id="dmd-impl">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-blue">🔧</div>
+  <div><h2>DMD/DMD2 适配自有模型：完整改动清单</h2></div>
+</div>
+
+<h3>3.1 模型组件结构</h3>
+<p>适配 DMD2 需要维护三个网络对象，均从同一套 base model 权重初始化：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">模型初始化结构</span>
+  </div>
+<pre><span class="line-comment"># 你的 base model 类（继承关系）</span>
+<span class="line-kw">class</span> <span class="line-fn">DMD2VideoModel</span>(DistillationMixin, TrigFlowMixin, YourBaseVideoDiT):
+    <span class="line-comment">"""
+    YourBaseVideoDiT  : 原始视频 DiT 架构（不改 forward 逻辑）
+    TrigFlowMixin     : 提供时间步采样、噪声 schedule 函数
+    DistillationMixin : 提供 training_step_generator / training_step_critic
+    继承顺序很重要（MRO），DistillationMixin 放最前
+    """</span>
+    <span class="line-kw">def</span> <span class="line-fn">__init__</span>(self, cfg):
+        <span class="line-fn">super()</span>.<span class="line-fn">__init__</span>(cfg)
+
+        <span class="line-comment"># Teacher：完整权重，全程冻结</span>
+        self.<span class="line-key">teacher</span> = <span class="line-fn">load_pretrained</span>(cfg.ckpt).<span class="line-fn">eval</span>()
+        <span class="line-kw">for</span> p <span class="line-kw">in</span> self.teacher.<span class="line-fn">parameters</span>(): p.requires_grad = <span class="line-kw">False</span>
+
+        <span class="line-comment"># Student（= self）：LoRA 或全参数</span>
+        self.<span class="line-fn">_setup_lora</span>(rank=<span class="line-num">64</span>, alpha=<span class="line-num">8</span>)   <span class="line-comment"># 可选</span>
+
+        <span class="line-comment"># Fake Score / Critic：完整权重，全参数训练</span>
+        self.<span class="line-key">critic</span> = <span class="line-fn">load_pretrained</span>(cfg.ckpt)
+        <span class="line-comment"># Critic 不用 LoRA，需要充足表达能力追踪 p_G</span>
+
+        <span class="line-comment"># （可选）单独的 GAN 判别器头，或复用 critic 的特征</span>
+        self.<span class="line-key">discriminator</span> = <span class="line-fn">DiscriminatorHead</span>(
+            in_dim=cfg.hidden_dim, <span class="line-comment"># 复用 critic 倒数第 N 层特征</span>
+        )</pre>
+</div>
+
+<h3>3.2 需要在 base model 上实现的新方法</h3>
+
+<div class="steps">
+  <div class="step purple">
+    <div class="step-body">
+      <strong>sample_student_timestep()</strong><br>
+      手动定义学生推理的时间步序列，替代 scheduler。对于 1 步生成，返回固定 t=T（最大噪声级别）；4 步生成返回 [T, 0.7T, 0.4T, 0.1T]。
+    </div>
+  </div>
+  <div class="step purple">
+    <div class="step-body">
+      <strong>backward_simulation(student, x_T, n_steps)</strong><br>
+      从纯噪声出发，运行 n_steps 步学生去噪，每步输出重新加噪到下一时间步。返回各时间步的 (x_t, t) 对，用于训练 critic。这是解决 train-test mismatch 的关键。
+    </div>
+  </div>
+  <div class="step purple">
+    <div class="step-body">
+      <strong>compute_cfg_score(x_noisy, t, cond)</strong><br>
+      调用 teacher 两次（有条件 + 无条件），合并为 CFG score：s = s_uncond + ω·(s_cond − s_uncond)。这个 CFG score 是 L_DM 的蒸馏目标，学生学成后推理不再需要 CFG。
+    </div>
+  </div>
+  <div class="step purple">
+    <div class="step-body">
+      <strong>training_step_generator() / training_step_critic()</strong><br>
+      两阶段交替训练的入口函数。Generator 步：critic 冻结，计算 L_DM + L_GAN 更新 student。Critic 步：student 冻结，在 backward-simulated 样本上更新 critic。
+    </div>
+  </div>
+</div>
+
+<h3>3.3 噪声 Schedule 适配</h3>
+
+<div class="note n-orange">
+  <div class="ni">⚠️</div>
+  <div class="nt">
+    <strong>常见坑：</strong>如果你的 base model 使用 DDPM/EDM/DDIM 的噪声参数化，而直接套 DMD2 的 TrigFlow 时间步，会导致 score 估计错误。需要确认：
+    <ul style="margin-top:8px;padding-left:18px;font-size:.86rem">
+      <li>s_fake 和 s_real 用<strong>相同的噪声参数化</strong>（同样的 σ_t 定义）</li>
+      <li>学生和教师的 timestep embedding <strong>语义一致</strong>（t=999 对两者意味着同样的噪声级别）</li>
+      <li>如果 base model 是 flow matching（Wan2.1, HunyuanVideo），TrigFlow 兼容性更好</li>
+    </ul>
+  </div>
+</div>
+
+<h3>3.4 适配检查清单</h3>
+<ul class="checklist">
+  <li><span class="chk">✓</span><span>从 base model 复制三份权重：student（LoRA）/ teacher（冻结）/ critic（全参）</span></li>
+  <li><span class="chk">✓</span><span>实现 <code>backward_simulation</code>，确认多步展开的 re-noise 使用与 teacher 相同的 σ_t</span></li>
+  <li><span class="chk">✓</span><span>Teacher 调用两次（cond / uncond）合成 CFG score 作为 s_real</span></li>
+  <li><span class="chk">✓</span><span>Critic 学习率设为 student LR 的 10~100 倍</span></li>
+  <li><span class="chk">✓</span><span>GAN 判别器复用 critic 特征（避免引入新参数）</span></li>
+  <li><span class="chk-o">△</span><span>如果 base model 是视频 DiT（非图像），backward_simulation 中的 re-noise 需按时序维度操作</span></li>
+  <li><span class="chk-o">△</span><span>视频长序列（>30K tokens）建议先做 SLA2 再做 DMD2，否则 teacher 调用成本极高</span></li>
+  <li><span class="chk-r">✗</span><span>不要用第三方 scheduler（如 DPM-Solver）控制 student 的推理步骤——手动定义时间步序列</span></li>
+  <li><span class="chk-r">✗</span><span>不要在 critic 上使用 LoRA——它需要全参数表达能力追踪 p_G</span></li>
+</ul>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §4 SLA ══════════════════════════ -->
+<section id="sla">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-green">⚡</div>
+  <div>
+    <h2>SLA：Sparse-Linear Attention 精确机制</h2>
+    <div class="meta"><a href="https://arxiv.org/abs/2509.24006">arXiv 2509.24006</a> · 清华 + 伯克利 · GitHub: <a href="https://github.com/thu-ml/SLA">thu-ml/SLA</a></div>
+  </div>
+</div>
+
+<h3>4.1 核心发现：注意力权重的二元结构</h3>
+<p>SLA 的出发点是对 Wan2.1 视频 DiT 注意力矩阵做奇异值分解（SVD）后的实证发现：</p>
+
+<div class="g2">
+<div class="card" style="border-color:rgba(62,207,142,.3)">
+  <h4 style="color:var(--green)">高秩稀疏部分（约5%的块）</h4>
+  <p style="font-size:.86rem;color:var(--muted)">幅值大的注意力权重块，对应"当前 token 高度关注的目标区域"。这部分的秩较高，低秩近似误差大，<strong>必须精确计算</strong>（FlashAttention）。</p>
+</div>
+<div class="card" style="border-color:rgba(0,210,255,.3)">
+  <h4 style="color:var(--cyan)">低秩稠密部分（约95%的块）</h4>
+  <p style="font-size:.86rem;color:var(--muted)">接近均匀分布的小权重块，秩极低（可用 1~2 个奇异向量近似）。用线性注意力（低秩特征映射）近似，误差可控。</p>
+</div>
+</div>
+
+<h3>4.2 块划分与三分类算法</h3>
+
+<p>将 QK^T 按 block 划分（块大小 BLKQ = BLKK = 64 tokens）：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">SLA 块分类算法</span>
+  </div>
+<pre><span class="line-kw">def</span> <span class="line-fn">classify_blocks</span>(Q, K, kh_pct=<span class="line-num">0.05</span>, kl_pct=<span class="line-num">0.10</span>, blk=<span class="line-num">64</span>):
+    <span class="line-comment">"""
+    kh_pct: 关键块比例 (top-k high)  —— 论文 kh%=5%
+    kl_pct: 次要块比例 (top-k low)   —— 论文 kl%=10%
+    剩余 85% 的块为可忽略块
+    """</span>
+    B, H, N, D = Q.shape
+    Q_blk = Q.<span class="line-fn">reshape</span>(B, H, N//blk, blk, D)  <span class="line-comment"># 分 block</span>
+    K_blk = K.<span class="line-fn">reshape</span>(B, H, N//blk, blk, D)
+
+    <span class="line-comment"># 估计每个 QK 块的幅值（用块内 max 或 mean 做代理）</span>
+    <span class="line-comment"># 不需要完整计算 A = softmax(QK^T)，用近似统计即可</span>
+    block_scores = <span class="line-fn">estimate_block_importance</span>(Q_blk, K_blk)
+    <span class="line-comment"># shape: (B, H, N/blk, N/blk)</span>
+
+    n_blocks = (N // blk) ** <span class="line-num">2</span>
+    n_critical  = <span class="line-fn">int</span>(n_blocks * kh_pct)   <span class="line-comment"># 5%</span>
+    n_marginal  = <span class="line-fn">int</span>(n_blocks * kl_pct)   <span class="line-comment"># 10%</span>
+
+    <span class="line-comment"># 按 block_scores 从大到小排序</span>
+    sorted_idx = <span class="line-fn">argsort</span>(block_scores, descending=<span class="line-kw">True</span>)
+    critical_mask  = sorted_idx[:n_critical]   <span class="line-comment"># 精确计算</span>
+    marginal_mask  = sorted_idx[n_critical:n_critical+n_marginal]  <span class="line-comment"># 线性近似</span>
+    <span class="line-comment"># 其余 85% 直接跳过（置 0）</span>
+
+    <span class="line-kw">return</span> critical_mask, marginal_mask</pre>
+</div>
+
+<h3>4.3 线性注意力核（Marginal 块的近似）</h3>
+
+<p>SLA 用 ELU 特征映射将 softmax 注意力分解为线性乘积，避免 O(N²) 计算：</p>
+
+<div class="fblock green">
+  <div class="flabel">线性注意力公式</div>
+  φ(x) = ELU(x) + 1&nbsp;&nbsp;&nbsp;<span style="color:var(--dim);font-size:.82em">（保证非负，近似 softmax 的指数增长特性）</span><br><br>
+  <span class="fc-g">Attn_linear(Q,K,V)</span> = φ(Q) · <span style="color:var(--cyan)">[φ(K)ᵀ · V]</span><br><br>
+  计算顺序：先算 <span style="color:var(--cyan)">φ(K)ᵀ·V</span>（O(N·D²)，算一次全局共享）<br>
+  再对每个 Q_i 查询：φ(Q_i)·<span style="color:var(--cyan)">[φ(K)ᵀ·V]</span>（O(N·D)）<br><br>
+  总复杂度：<span class="fc-g">O(N·D²)</span> 远小于 O(N²·D)（当 N >> D 时）
+</div>
+
+<div class="note n-green">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>精度说明：</strong>ELU 核与真实 softmax 的近似误差在低权值区域可控。对于 marginal 块（幅值本就小），近似误差对最终输出的影响远小于直接跳过（skip）带来的信息丢失。这正是 SLA 超越纯稀疏方法的原因。</div>
+</div>
+
+<h3>4.4 Fine-Tuning：恢复质量的蒸馏微调</h3>
+
+<p>替换注意力后直接推理会有质量下降，用少量数据做<strong>注意力输出蒸馏</strong>：</p>
+
+<div class="fblock green">
+  <div class="flabel">SLA 微调损失</div>
+  <span class="fc-g">L_SLA</span> = E<sub>video~D, layer l</sub>[ ‖<span class="fc-g">SLA_output</span>(Q,K,V) − <span class="fc-b">FullAttn_output</span>(Q,K,V)‖² ]<br><br>
+  <span style="color:var(--dim);font-size:.82em">
+  · 对每一层的注意力模块分别施加损失<br>
+  · FullAttn 输出作为软标签（教师），SLA 模块作为学生<br>
+  · 只优化 SLA 相关参数（块阈值，线性核权重）<br>
+  · 不更新 FFN / LayerNorm / 其他层
+  </span>
+</div>
+
+<h3>4.5 关键超参数（实验来源：Wan2.1-1.3B）</h3>
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>超参数</th><th>值</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>Block 大小 BLKQ/BLKK</td><td>64</td><td>token 级 block，越小越精细但开销越大</td></tr>
+<tr><td>kh%（关键块比例）</td><td><strong>5%</strong></td><td>精确 FlashAttention 计算的块比例</td></tr>
+<tr><td>kl%（次要块比例）</td><td>10%</td><td>线性注意力近似的块比例</td></tr>
+<tr><td>跳过块比例</td><td>85%</td><td>100 − kh% − kl%</td></tr>
+<tr><td>微调数据量</td><td>20,000 条视频</td><td>5秒，480p，自采集</td></tr>
+<tr><td>微调步数</td><td><strong>2,000 步</strong></td><td>极少，1~2 小时可完成</td></tr>
+<tr><td>批大小</td><td>64</td><td>—</td></tr>
+<tr><td>线性核函数</td><td>ELU(x)+1</td><td>也可尝试 relu / softmax 核</td></tr>
+<tr><td>注意力减少比例</td><td>95%</td><td>kh%=5% 时的实际计算量</td></tr>
+<tr><td>注意力单模块加速</td><td>13.7×（SageSLA kernel）</td><td>需要 SageSLA CUDA 核</td></tr>
+<tr><td>端到端加速</td><td>2.2×</td><td>FFN 等其他模块不受影响</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §5 SLA2 ══════════════════════════ -->
+<section id="sla2">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-orange">🧠</div>
+  <div>
+    <h2>SLA2：Learnable Routing + QAT 精确机制</h2>
+    <div class="meta"><a href="https://arxiv.org/abs/2602.12675">arXiv 2602.12675</a> · 清华 + 伯克利</div>
+  </div>
+</div>
+
+<h3>5.1 改进① — 可学习路由器（替代启发式阈值）</h3>
+
+<p>SLA 的块分类依赖"先算出注意力权重，再按幅值决定路由"——这是一个循环悖论：你必须先做计算才能决定如何计算。SLA2 用一个<strong>轻量 MLP 路由器</strong>在前向前预测路由：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">SLA2 可学习路由器</span>
+  </div>
+<pre><span class="line-kw">class</span> <span class="line-fn">BlockRouter</span>(nn.Module):
+    <span class="line-kw">def</span> <span class="line-fn">__init__</span>(self, dim, blk=<span class="line-num">64</span>):
+        <span class="line-fn">super()</span>.<span class="line-fn">__init__</span>()
+        <span class="line-comment"># 极轻量：对 Q 和 K 的块均值做 MLP</span>
+        self.router = nn.<span class="line-fn">Sequential</span>(
+            nn.<span class="line-fn">Linear</span>(dim * <span class="line-num">2</span>, dim // <span class="line-num">4</span>),  <span class="line-comment"># Q_mean concat K_mean</span>
+            nn.ReLU(),
+            nn.<span class="line-fn">Linear</span>(dim // <span class="line-num">4</span>, <span class="line-num">1</span>),           <span class="line-comment"># 输出每对块的路由 logit</span>
+        )
+
+    <span class="line-kw">def</span> <span class="line-fn">forward</span>(self, Q, K, blk=<span class="line-num">64</span>):
+        <span class="line-comment"># 压缩表示：块内平均池化</span>
+        Q_blk = Q.<span class="line-fn">reshape</span>(..., N//blk, blk, D).<span class="line-fn">mean</span>(dim=-<span class="line-num">2</span>)  <span class="line-comment"># (B,H,N/blk,D)</span>
+        K_blk = K.<span class="line-fn">reshape</span>(..., N//blk, blk, D).<span class="line-fn">mean</span>(dim=-<span class="line-num">2</span>)
+
+        <span class="line-comment"># 所有 QK 对的路由分数</span>
+        Q_exp = Q_blk[:, :, :, None, :].<span class="line-fn">expand</span>(..., N//blk, D)
+        K_exp = K_blk[:, :, None, :, :].<span class="line-fn">expand</span>(N//blk, ..., D)
+        feat = <span class="line-fn">torch.cat</span>([Q_exp, K_exp], dim=-<span class="line-num">1</span>)  <span class="line-comment"># (B,H,N/blk,N/blk,2D)</span>
+
+        logits = self.<span class="line-fn">router</span>(feat).<span class="line-fn">squeeze</span>(-<span class="line-num">1</span>)    <span class="line-comment"># (B,H,N/blk,N/blk)</span>
+
+        <span class="line-kw">if</span> self.training:
+            <span class="line-comment"># 软路由（可微分）</span>
+            <span class="line-kw">return</span> <span class="line-fn">torch.sigmoid</span>(logits)
+        <span class="line-kw">else</span>:
+            <span class="line-comment"># 硬路由（Straight-Through）</span>
+            hard = (logits > <span class="line-num">0</span>).<span class="line-fn">float</span>()
+            <span class="line-kw">return</span> hard + logits.<span class="line-fn">sigmoid</span>() - logits.<span class="line-fn">sigmoid</span>().<span class="line-fn">detach</span>()
+            <span class="line-comment"># STE：前向用 hard，反向用 sigmoid 梯度</span></pre>
+</div>
+
+<h3>5.2 改进② — 忠实的稀疏-线性分解</h3>
+
+<p>SLA 中"marginal 块用线性注意力"并非 softmax 的严格分解。SLA2 提出一个数学上更忠实的公式：</p>
+
+<div class="fblock orange">
+  <div class="flabel">SLA2 忠实分解</div>
+  A = softmax(QKᵀ/√D) = <span class="fc-o">α</span>·A_sparse + (1−<span class="fc-o">α</span>)·A_linear<br><br>
+  Output = <span class="fc-o">α</span>·<span class="fc-g">SparseAttn(Q,K,V)</span> + (1−<span class="fc-o">α</span>)·<span class="fc-b">LinearAttn(Q,K,V)</span><br><br>
+  <span class="fc-o">α</span> ∈ ℝ<sup>H</sup> 是<strong>逐注意力头的可学习标量</strong>（H = num_heads）<br>
+  随训练自动调整稀疏分支和线性分支的权重
+</div>
+
+<div class="note n-orange">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>为什么更忠实？</strong>SLA 的"3 类块"是一个离散的划分，不能微分优化。SLA2 的 α 让模型端到端决定"对每个注意力头，稀疏注意力应该贡献多少"，更贴近对 softmax 的连续近似。</div>
+</div>
+
+<h3>5.3 改进③ — QAT（量化感知训练）</h3>
+
+<p>注意力模块的计算瓶颈之一是内存带宽（Q/K/V 矩阵读写），低比特量化可进一步降低带宽需求。SLA2 用 QAT 避免直接量化的精度损失：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">SLA2 QAT 实现（Fake Quantization）</span>
+  </div>
+<pre><span class="line-kw">def</span> <span class="line-fn">quantize_tensor</span>(x, scale, bits=<span class="line-num">8</span>):
+    <span class="line-comment"># 模拟 INT8 量化（forward only）</span>
+    qmin, qmax = -<span class="line-num">128</span>, <span class="line-num">127</span>
+    x_q = <span class="line-fn">torch.clamp</span>(<span class="line-fn">torch.round</span>(x / scale), qmin, qmax)
+    x_dq = x_q * scale   <span class="line-comment"># 反量化回 FP16</span>
+    <span class="line-comment"># STE：前向用量化值，反向当作恒等函数</span>
+    <span class="line-kw">return</span> x + (x_dq - x).<span class="line-fn">detach</span>()
+
+<span class="line-kw">def</span> <span class="line-fn">sla2_attention</span>(Q, K, V, router, alpha, training=<span class="line-kw">True</span>):
+    <span class="line-kw">if</span> training:
+        <span class="line-comment"># Fake Quantization：训练时模拟量化误差</span>
+        scale_Q = Q.<span class="line-fn">abs</span>().<span class="line-fn">max</span>() / <span class="line-num">127</span>
+        scale_K = K.<span class="line-fn">abs</span>().<span class="line-fn">max</span>() / <span class="line-num">127</span>
+        Q_q = <span class="line-fn">quantize_tensor</span>(Q, scale_Q)   <span class="line-comment"># 量化 Q</span>
+        K_q = <span class="line-fn">quantize_tensor</span>(K, scale_K)   <span class="line-comment"># 量化 K</span>
+        <span class="line-comment"># V 保持 FP16（精度更敏感）</span>
+    <span class="line-kw">else</span>:
+        <span class="line-comment"># 推理时用真实 INT8 kernel（SageAttention2++）</span>
+        Q_q, K_q = <span class="line-fn">sage_int8_quantize</span>(Q, K)
+
+    <span class="line-comment"># 路由决策</span>
+    route = <span class="line-fn">router</span>(Q_q, K_q)   <span class="line-comment"># (B,H,N/blk,N/blk)，软/硬路由</span>
+
+    <span class="line-comment"># 稀疏注意力（精确计算，仅 route=1 的块）</span>
+    attn_sparse = <span class="line-fn">sparse_flash_attention</span>(Q_q, K_q, V, mask=route)
+
+    <span class="line-comment"># 线性注意力（近似，仅 route=0 的块）</span>
+    attn_linear = <span class="line-fn">linear_attention_elu</span>(Q_q, K_q, V, mask=<span class="line-num">1</span>-route)
+
+    <span class="line-comment"># 忠实分解合并（alpha 逐头可学习）</span>
+    <span class="line-kw">return</span> alpha * attn_sparse + (<span class="line-num">1</span> - alpha) * attn_linear</pre>
+</div>
+
+<h3>5.4 关键超参数</h3>
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>超参数</th><th>值</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>路由器 MLP 隐藏维度</td><td>dim//4</td><td>极轻量，参数量 &lt;1% 总模型</td></tr>
+<tr><td>可学习 α 初始值</td><td>0.5</td><td>逐头初始化为均等混合</td></tr>
+<tr><td>QAT 精度</td><td>INT8 / FP8</td><td>Q 和 K 量化，V 保持高精度</td></tr>
+<tr><td>量化方案</td><td>SageAttention2++ 兼容</td><td>per-tensor / per-token scale</td></tr>
+<tr><td>目标稀疏度</td><td>97%</td><td>SLA 的 95% 进一步提升</td></tr>
+<tr><td>注意力加速</td><td>18.6×</td><td>含量化带来的额外加速</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §6 SLA IMPL ══════════════════════════ -->
+<section id="sla-impl">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-green">🔧</div>
+  <div><h2>SLA/SLA2 适配自有模型：完整改动清单</h2></div>
+</div>
+
+<h3>6.1 代码级改动：替换 Attention Module</h3>
+<p>SLA 的改动局限在<strong>每个 DiT block 的 attention 子模块</strong>，不触碰 FFN / 归一化 / 位置编码：</p>
+
+<div class="impl">
+  <div class="impl-head">
+    <div class="dot" style="background:var(--red)"></div><div class="dot" style="background:var(--yellow)"></div><div class="dot" style="background:var(--green)"></div>
+    <span class="impl-title">替换策略：模块级热插拔</span>
+  </div>
+<pre><span class="line-kw">from</span> sparse_linear_attention <span class="line-kw">import</span> SparseLinearAttention  <span class="line-comment"># thu-ml/SLA</span>
+
+<span class="line-kw">def</span> <span class="line-fn">replace_attention_with_sla</span>(model, config):
+    <span class="line-kw">for</span> name, module <span class="line-kw">in</span> model.<span class="line-fn">named_modules</span>():
+        <span class="line-kw">if</span> <span class="line-fn">isinstance</span>(module, YourAttentionClass):
+            <span class="line-comment"># 构建 SLA 模块，继承原始 Q/K/V/O projection 权重</span>
+            sla_module = <span class="line-fn">SparseLinearAttention</span>(
+                head_dim   = config.head_dim,   <span class="line-comment"># 128</span>
+                topk       = config.topk,       <span class="line-comment"># 0.05（kh%=5%）</span>
+                feature_map= <span class="line-str">'elu'</span>,            <span class="line-comment"># ELU+1 核</span>
+                BLKQ       = <span class="line-num">64</span>,
+                BLKK       = <span class="line-num">64</span>,
+            )
+            <span class="line-comment"># 复制 Q/K/V/O 投影权重（关键：不随机初始化）</span>
+            sla_module.<span class="line-fn">copy_qkvo_weights</span>(module)
+            <span class="line-comment"># 替换</span>
+            <span class="line-fn">set_module_by_name</span>(model, name, sla_module)
+    <span class="line-kw">return</span> model
+
+<span class="line-comment"># 使用</span>
+model = <span class="line-fn">load_base_model</span>(ckpt_path)
+model = <span class="line-fn">replace_attention_with_sla</span>(model, sla_config)
+
+<span class="line-comment"># 微调（只训练 SLA 相关参数，冻结其余）</span>
+<span class="line-kw">for</span> name, p <span class="line-kw">in</span> model.<span class="line-fn">named_parameters</span>():
+    p.requires_grad = <span class="line-str">'sla'</span> <span class="line-kw">in</span> name  <span class="line-comment"># 只放开 SLA 参数</span></pre>
+</div>
+
+<h3>6.2 微调流程</h3>
+
+<div class="steps">
+  <div class="step green">
+    <div class="step-body">
+      <strong>准备微调数据集</strong>：SLA 原论文用 20,000 条 5秒 480p 视频（自采集）。实际上对质量无严格要求——目的是提供多样的时空 token 分布让 attention 看到。可用公开数据集（Panda-70M、WebVid 子集）或内部视频数据替代。
+    </div>
+  </div>
+  <div class="step green">
+    <div class="step-body">
+      <strong>冻结非 SLA 参数，运行双前向</strong>：每个 batch 跑两次前向：① 完整注意力（Full Attention，教师）；② SLA 注意力（学生）。收集每层的注意力输出差，用 L2 损失优化 SLA 参数。只需 2000 步。
+    </div>
+  </div>
+  <div class="step green">
+    <div class="step-body">
+      <strong>逐层验证质量</strong>：在微调中间（如 500/1000/2000 步）生成样本，计算 FVD 或 CLIP 相似度与原模型对比，确认质量无损。通常 kh%=5% 时 2000 步后质量完全恢复。
+    </div>
+  </div>
+  <div class="step green">
+    <div class="step-body">
+      <strong>（SLA2）加入路由器训练</strong>：路由器 MLP 参数从零初始化，随微调一起训练。α 初始化为 0.5（均等混合），学习后通常收敛到每头不同的值，反映不同注意力头的稀疏偏好。
+    </div>
+  </div>
+  <div class="step green">
+    <div class="step-body">
+      <strong>（SLA2）QAT 阶段</strong>：在常规 SLA2 微调收敛后，加入 fake quantization，再训练 500~1000 步让模型适应量化误差。推理时替换为真实 INT8 kernel（SageAttention2++）。
+    </div>
+  </div>
+</div>
+
+<h3>6.3 适配不同 base model 架构</h3>
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>Base Model 类型</th><th>注意力类型</th><th>SLA 适配难度</th><th>注意事项</th></tr></thead>
+<tbody>
+<tr><td>Wan2.1 (DiT)</td><td class="yes">3D Full Attn</td><td class="yes">低（原论文验证）</td><td>直接用 SageSLA kernel</td></tr>
+<tr><td>CogVideoX (DiT)</td><td class="yes">3D Full Attn</td><td class="yes">低</td><td>注意 patch size 对 token 数影响</td></tr>
+<tr><td>HunyuanVideo</td><td class="ok">Dual-Stream</td><td class="ok">中</td><td>Text/Image 双流注意力需分别替换</td></tr>
+<tr><td>Open-Sora (DiT)</td><td class="yes">ST-Attn</td><td class="yes">低</td><td>时空分离注意力 token 数较少</td></tr>
+<tr><td>UNet-based（旧架构）</td><td class="no">Cross/Self</td><td class="no">高</td><td>序列长度短，加速收益有限，不推荐</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>6.4 适配检查清单</h3>
+<ul class="checklist">
+  <li><span class="chk">✓</span><span>确认 base model 的 attention 是标准 QKV 格式（非 grouped query / sliding window 等变体）</span></li>
+  <li><span class="chk">✓</span><span>SLA 替换时复制原始 Q/K/V/O projection 权重，不随机初始化</span></li>
+  <li><span class="chk">✓</span><span>微调时冻结所有非 SLA 参数（FFN / LN / embedding 等）</span></li>
+  <li><span class="chk">✓</span><span>每 500 步生成样本验证 FVD，防止过拟合导致质量下降</span></li>
+  <li><span class="chk-o">△</span><span>如果序列长度 &lt; 5K，SLA 加速收益有限（O(N²) 计算量本就不大）——考虑提高分辨率或帧率后再用</span></li>
+  <li><span class="chk-o">△</span><span>SLA2 路由器初始化用全零（输出 sigmoid=0.5，对应均等混合），避免早期路由偏向极端</span></li>
+  <li><span class="chk-o">△</span><span>QAT 阶段建议先在小规模数据上验证量化误差可接受后，再全量训练</span></li>
+  <li><span class="chk-r">✗</span><span>不要对 V 矩阵做量化（精度最敏感，量化收益远小于风险）</span></li>
+</ul>
+
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════ §7 JOINT ══════════════════════════ -->
+<section id="joint">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-purple">🔭</div>
+  <div><h2>联合方案 · 踩坑汇总 · 研究建议</h2></div>
+</div>
+
+<h3>7.1 推荐的分阶段实施路径</h3>
+
+<div class="pipe">
+  <div class="ps"><div class="pe">📦</div><div class="pt">阶段0</div><div class="pd">确认 base model<br>可正常推理</div></div>
+  <div class="ps"><div class="pe">⚡</div><div class="pt">阶段1</div><div class="pd">SLA 微调<br>2000 步</div></div>
+  <div class="ps"><div class="pe">🧠</div><div class="pt">阶段2</div><div class="pd">SLA→SLA2<br>加路由器+QAT</div></div>
+  <div class="ps"><div class="pe">🎓</div><div class="pt">阶段3</div><div class="pd">DMD2 蒸馏<br>在 SLA2 模型上</div></div>
+  <div class="ps"><div class="pe">✅</div><div class="pt">验证</div><div class="pd">FVD · CLIP<br>生成质量</div></div>
+</div>
+
+<div class="note n-cyan">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>为什么先 SLA2 再 DMD2？</strong>DMD2 训练时 teacher 需要频繁推理（每步 backward simulation 都要跑 teacher）。如果 teacher 已经是 SLA2 压缩版，每次 teacher 推理快 18.6×，DMD2 训练成本大幅降低。反之，如果先做 DMD2，teacher 还是慢的全注意力模型，训练极慢。</div>
+</div>
+
+<h3>7.2 联合训练时的损失权重调度</h3>
+
+<div class="fblock purple">
+  <div class="flabel">联合损失（仅供参考，尚无论文标准）</div>
+  <span class="fc-p">L_joint</span> = <span class="fc-b">L_DM</span> + λ₁·<span class="fc-p">L_GAN</span> + λ₂·<span class="fc-g">L_SLA</span><br><br>
+  <span style="color:var(--dim);font-size:.82em">
+  建议：初期 λ₂ 设较大（SLA 质量优先），中期逐渐减小（DMD 接管）<br>
+  L_SLA 梯度和 L_DM 梯度的尺度差异可达 100×，需要梯度归一化
+  </span>
+</div>
+
+<h3>7.3 高频踩坑与解法</h3>
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>问题</th><th>原因</th><th>解法</th></tr></thead>
+<tbody>
+<tr>
+  <td><strong>DMD2 训练发散</strong></td>
+  <td>fake score LR 太低，s_fake 追不上 p_G</td>
+  <td>提高 critic LR / 降低 G LR，比值保持 ≥10</td>
+</tr>
+<tr>
+  <td><strong>DMD2 生成模糊</strong></td>
+  <td>student timestep 设定不合理</td>
+  <td>确认 t_student 对应高噪声级（接近 T），不要用中间步</td>
+</tr>
+<tr>
+  <td><strong>CFG 蒸馏后 prompt 跟随变差</strong></td>
+  <td>CFG scale ω 选择不当</td>
+  <td>初期用 teacher 的 ω（如 7.5），蒸馏稳定后逐渐降低到 3~5</td>
+</tr>
+<tr>
+  <td><strong>SLA 微调后闪烁感</strong></td>
+  <td>时序注意力被稀疏截断</td>
+  <td>对时序注意力层适当提高 kh%（如 10%），空间注意力可保持 5%</td>
+</tr>
+<tr>
+  <td><strong>SLA2 路由器不收敛</strong></td>
+  <td>路由 MLP 学习率与主网络相同</td>
+  <td>路由器 LR 设为主网络的 10× 倍，类似 two time-scale 思路</td>
+</tr>
+<tr>
+  <td><strong>QAT 后量化误差大</strong></td>
+  <td>per-tensor scale 不精确</td>
+  <td>改用 per-token scale（每行单独量化），兼容 SageAttention2++</td>
+</tr>
+<tr>
+  <td><strong>Backward simulation OOM</strong></td>
+  <td>多步展开的中间状态太多</td>
+  <td>对 simulation 步用 no_grad + gradient checkpointing</td>
+</tr>
+<tr>
+  <td><strong>端到端加速不及预期</strong></td>
+  <td>FFN/LN 成为新瓶颈</td>
+  <td>考虑对 FFN 用 SpargeAttn 方案，或用 FlashAttention + activation checkpointing</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<h3>7.4 近期相关工作（值得跟踪）</h3>
+<div class="g2">
+<div class="card">
+  <h4 style="color:var(--blue)">步数蒸馏方向</h4>
+  <ul style="list-style:none;font-size:.86rem">
+    <li style="padding:5px 0;border-bottom:1px solid var(--border2)">
+      <a href="https://arxiv.org/abs/2601.09881">TMD (2601.09881)</a>：Transition Matching Distillation，在 Wan2.1 14B 上验证 DMD2 扩展
+    </li>
+    <li style="padding:5px 0;border-bottom:1px solid var(--border2)">
+      <a href="https://arxiv.org/abs/2511.01419">ASD (2511.01419)</a>：Adversarial Self-Distillation，因果视频 DiT 的 DMD 变体
+    </li>
+    <li style="padding:5px 0">
+      <a href="https://arxiv.org/abs/2412.15689">DOLLAR (2412.15689)</a>：DMD2 + 奖励优化，人类偏好对齐
+    </li>
+  </ul>
+</div>
+<div class="card">
+  <h4 style="color:var(--green)">注意力加速方向</h4>
+  <ul style="list-style:none;font-size:.86rem">
+    <li style="padding:5px 0;border-bottom:1px solid var(--border2)">
+      <a href="https://arxiv.org/abs/2603.08982">SVG-EAR (2603.08982)</a>：误差感知路由，SLA 的补充
+    </li>
+    <li style="padding:5px 0;border-bottom:1px solid var(--border2)">
+      <a href="https://arxiv.org/abs/2601.16515">SALAD (2601.16515)</a>：高稀疏度线性注意力调优，与 SLA 思路相近
+    </li>
+    <li style="padding:5px 0">
+      <a href="https://arxiv.org/abs/2508.10774">Video-BLADE (2508.10774)</a>：块稀疏注意力 + 步数蒸馏联合优化
+    </li>
+  </ul>
+</div>
+</div>
+
+<h3>7.5 在自有 base model 上的最优适配路径建议</h3>
+
+<div class="note n-purple">
+  <div class="ni">🎯</div>
+  <div class="nt">
+    <strong>如果你的 base model 是标准视频 DiT（Wan2.1 / CogVideoX 类）：</strong>
+    <ol style="margin-top:10px;padding-left:20px;font-size:.86rem;line-height:2">
+      <li>直接用 <code>thu-ml/SLA</code> 的 <code>SparseLinearAttention</code> 替换 attention module</li>
+      <li>用内部视频数据微调 2000 步（loss = attention output MSE）</li>
+      <li>验证 FVD 无损后，加入 SLA2 的路由器和 α 继续训练 1000 步</li>
+      <li>加 QAT 训练 500 步，换 INT8 kernel 推理</li>
+      <li>在 SLA2 模型上实现 DMD2 训练循环（三网络：student/critic/teacher），微调 ~50K 步</li>
+      <li>目标：1~2 步生成，端到端约 10~20× 于原模型</li>
+    </ol>
+  </div>
+</div>
+
+</div>
+</section>
+
+<footer>
+  <div>基于 arXiv 2311.18828 · 2405.14867 · 2509.24006 · 2602.12675 及 NVIDIA Cosmos 工程实现整理</div>
+  <div style="margin-top:6px;color:#2a3050">面向自有 base model 适配的实现级技术解读 · VideoDistill 项目</div>
+</footer>
+
 </body>
 </html>
