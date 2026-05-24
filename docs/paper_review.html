@@ -212,6 +212,7 @@ footer{border-top:1px solid var(--border);padding:32px 28px;text-align:center;co
   <div class="toc-title">目录</div>
   <div class="toc-grid">
     <div>
+      <a href="#intro"><span class="toc-num">基础.</span>扩散模型与蒸馏基础（新手必读）</a>
       <a href="#landscape"><span class="toc-num">0.</span>全局架构与两条技术线</a>
       <a href="#dmd"><span class="toc-num">1.</span>DMD — 公式 · 算法 · 超参</a>
       <a href="#dmd2"><span class="toc-num">2.</span>DMD2 — 三项改进深度拆解</a>
@@ -225,6 +226,178 @@ footer{border-top:1px solid var(--border);padding:32px 28px;text-align:center;co
     </div>
   </div>
 </nav>
+
+<!-- ══════════════════════════ §INTRO BASICS ══════════════════════════ -->
+<section id="intro">
+<div class="wrap">
+<div class="s-head">
+  <div class="s-icon ic-cyan">📚</div>
+  <div><h2>前置基础：扩散模型与蒸馏核心概念</h2>
+    <div class="meta">从第一性原理理解 DMD / SLA 的研究脉络 — 已熟悉扩散模型可跳至 §0</div>
+  </div>
+</div>
+
+<h3>B.1 扩散模型的前向与反向过程</h3>
+
+<p>扩散模型包含两个互逆的过程：</p>
+
+<div class="g2">
+<div class="card" style="border-color:rgba(79,142,247,.3)">
+  <h4 style="color:var(--blue)">前向过程（固定，无需学习）</h4>
+  <p style="font-size:.86rem;color:var(--muted)">从真实数据 x₀ 出发，按固定规则逐步加高斯噪声，最终在 t=T 时变成纯噪声 x_T。这个过程完全固定，不需要训练。</p>
+  <div class="fblock" style="margin-top:10px">
+    q(x_t | x₀) = 𝒩(√ᾱ_t · x₀, (1−ᾱ_t)·I)<br>
+    <span style="color:var(--dim);font-size:.82em">ᾱ_t 随 t 增大而减小；t=T 时 x_T ≈ 纯高斯噪声</span>
+  </div>
+</div>
+<div class="card" style="border-color:rgba(155,109,255,.3)">
+  <h4 style="color:var(--purple)">反向过程（神经网络学习）</h4>
+  <p style="font-size:.86rem;color:var(--muted)">用神经网络（视频 DiT）学习"给定带噪图像 x_t，预测噪声或去噪后的结果"，每步去掉一层噪声，迭代 T 步还原 x₀。</p>
+  <div class="fblock purple" style="margin-top:10px">
+    p_θ(x_{t-1} | x_t) = 𝒩(μ_θ(x_t, t), Σ_t)<br>
+    <span style="color:var(--dim);font-size:.82em">θ 是 DiT 网络参数；训练 = 最小化去噪预测误差</span>
+  </div>
+</div>
+</div>
+
+<p><strong>Flow Matching（Wan2.1 / HunyuanVideo 等实际使用的变体）：</strong>将加噪方式换成线性插值 x_t = (1−t)·x₀ + t·ε，神经网络预测"速度向量"而非噪声。ODE 轨迹更直，理论上少步误差更小。本质思路与扩散模型相同，只是参数化不同，DMD/SLA 方法对两者均适用。</p>
+
+<h3>B.2 Score 函数：DMD 的数学基础</h3>
+
+<p><strong>Score 函数</strong>是扩散模型理论的核心，也是理解 DMD 梯度推导的关键：</p>
+
+<div class="fblock">
+  <div class="flabel">Score 函数定义</div>
+  s(x, t) = ∇_x log p_t(x)<br><br>
+  <span style="color:var(--dim);font-size:.82em">
+  · p_t(x)：时间步 t 下，真实数据被噪声污染后的概率密度函数<br>
+  · ∇_x log p_t：密度对 x 的梯度 —— 即"往密度更高的地方走"的方向<br>
+  · 与网络输出的关系：s(x,t) ≈ −ε_θ(x,t) / σ_t（线性换算，不需要额外实现）
+  </span>
+</div>
+
+<div class="note n-blue">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>直觉类比：</strong>把概率密度 p_t(x) 想象成地形高度图。Score 函数就是每个位置的"上坡方向"。去噪过程 = 不断沿 Score 方向爬坡，从低密度区（纯噪声）走向高密度区（真实图像/视频分布的山顶）。每一步神经网络前向计算 = 计算当前位置的上坡方向。</div>
+</div>
+
+<h3>B.3 为什么推理需要 50 步（不能一步到位）</h3>
+
+<p>反向去噪过程本质上是在求解一个微分方程（ODE/SDE）。每步神经网络前向 = 数值积分的一个步长。步长越大，累积误差越大，最终图像质量越差：</p>
+
+<div class="pipe">
+  <div class="ps"><div class="pe">🌫️</div><div class="pt">x_T</div><div class="pd">纯噪声<br>输入</div></div>
+  <div class="ps"><div class="pe">🔵</div><div class="pt">x_{T-1}</div><div class="pd">第1步<br>一次 DiT 前向</div></div>
+  <div class="ps"><div class="pe">🔵</div><div class="pt">···</div><div class="pd">重复 N 步<br>每步一次前向</div></div>
+  <div class="ps"><div class="pe">🖼️</div><div class="pt">x₀</div><div class="pd">清晰输出<br>图像/视频</div></div>
+</div>
+
+<p>DDIM 把随机 SDE 变成确定性 ODE，将步数从 1000 降到 50，但 50 步以下质量就明显退化。对视频 DiT 来说，<strong>每步前向需要数秒，50步 = 几分钟才能生成一条视频</strong>——这正是步数蒸馏要解决的核心问题。</p>
+
+<div class="metrics">
+  <div class="metric"><div class="mv mv-p">1000</div><div class="ml">DDPM 原始步数</div></div>
+  <div class="metric"><div class="mv mv-b">50</div><div class="ml">DDIM 加速后</div></div>
+  <div class="metric"><div class="mv mv-o">4</div><div class="ml">DMD2 蒸馏后</div></div>
+  <div class="metric"><div class="mv mv-g">1</div><div class="ml">DMD 1步生成</div></div>
+</div>
+
+<h3>B.4 什么是步数蒸馏</h3>
+
+<div class="note n-orange">
+  <div class="ni">⚠️</div>
+  <div class="nt"><strong>常见误区：</strong>扩散模型的步数蒸馏 ≠ 传统的模型压缩蒸馏。Student 和 Teacher 的参数量完全相同（都是完整的视频 DiT），Student 甚至直接用 Teacher 的权重初始化。蒸馏的目标是：让 Student 用 1~4 步完成 Teacher 50步的工作，<em>参数量不变，推理步数大幅减少</em>。</div>
+</div>
+
+<div class="card" style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>类型</th><th>Teacher</th><th>Student</th><th>压缩对象</th></tr></thead>
+<tbody>
+<tr><td>传统模型压缩蒸馏</td><td>大参数模型（如 7B LLM）</td><td>小参数模型（如 1B LLM）</td><td>参数量（推理步数不变）</td></tr>
+<tr><td><strong>扩散步数蒸馏</strong></td><td>50步 DDIM 推理过程</td><td>同等参数量的 DiT</td><td><strong>推理步数</strong>（参数量不变）</td></tr>
+</tbody>
+</table>
+</div>
+
+<h3>B.5 扩散蒸馏的三大范式（演进路线）</h3>
+
+<div class="steps">
+  <div class="step">
+    <div class="step-body">
+      <strong>范式一：渐进式回归蒸馏（Progressive Distillation, 2022）</strong><br>
+      <span style="font-size:.85rem;color:var(--muted)">让 Student 学习"Teacher 走 2 步的终点，Student 用 1 步到达"。迭代执行：50步→25步→12步→…→1步。<br>
+      <span style="color:var(--red)">关键问题：</span>每轮都有质量损耗，多轮叠加后严重退化；1步生成时图像明显模糊（原因见 B.6）。</span>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-body">
+      <strong>范式二：一致性蒸馏（Consistency Models, 2023）</strong><br>
+      <span style="font-size:.85rem;color:var(--muted)">强制网络满足"一致性条件"：对同一 ODE 轨迹上的任意 x_t，都直接映射到同一个 x₀。1步推理：x_T → x₀ 一步完成。<br>
+      <span style="color:var(--green)">优点：</span>1步质量明显优于渐进式。<span style="color:var(--red)">限制：</span>4步以上质量提升有限，仍弱于原始多步 DDIM。</span>
+    </div>
+  </div>
+  <div class="step orange">
+    <div class="step-body">
+      <strong>范式三：分布匹配蒸馏（Distribution Matching Distillation = DMD, 2023，本文主线）</strong><br>
+      <span style="font-size:.85rem;color:var(--muted)">不匹配具体的输出样本，而是要求 Student 的<strong>整体输出分布</strong>与真实数据分布对齐。用 KL 散度衡量分布差距，用 Score 函数差作为梯度信号驱动 Student 更新。<br>
+      <span style="color:var(--green)">效果：</span>1步质量接近甚至超过 DDIM 多步；DMD2 进一步优化后 1~4步均表现优异，FID 达到 SOTA。</span>
+    </div>
+  </div>
+</div>
+
+<h3>B.6 分布匹配为什么优于回归损失（核心直觉）</h3>
+
+<p>这是理解 DMD 相对于传统方法优势的关键直觉，也是整个 DMD 系列的理论基础：</p>
+
+<div class="vs">
+  <div class="vs-left">
+    <div class="vs-title b">回归损失（L2/MSE）的问题</div>
+    <p style="font-size:.85rem;margin-bottom:10px;color:var(--muted)">给定同一个噪声 z，Teacher 可能生成"红色汽车"（数据集中出现概率 50%）或"蓝色汽车"（50%）。Student 用 L2 损失去逼近 Teacher，学到的是两种可能输出的<strong>期望值</strong>（均值）——一辆紫色、模糊的"平均汽车"。</p>
+    <div class="fblock" style="margin-top:8px;font-size:.82rem">
+      L_reg = E[‖G(z) − x*‖²]<br>
+      <span style="color:var(--dim)">x* = Teacher 某次具体输出<br>→ G 学会输出期望值 → 模糊、无锐利细节</span>
+    </div>
+  </div>
+  <div class="vs-right">
+    <div class="vs-title p">分布匹配（KL 散度）</div>
+    <p style="font-size:.85rem;margin-bottom:10px;color:var(--muted)">不要求 G(z) 等于任何特定的 x*，只要求 G 的<strong>整体输出分布 p_G</strong> 与真实数据分布 p_data 形状相同。G 可以自由选择生成红车或蓝车，每次都是清晰的——只要整体上红蓝各占 50% 就符合目标。</p>
+    <div class="fblock purple" style="margin-top:8px;font-size:.82rem">
+      L_DM = D_KL(p_G ‖ p_data)<br>
+      <span style="color:var(--dim)">不约束单次输出，约束整体分布<br>→ G 保持生成多样性 → 每次输出清晰</span>
+    </div>
+  </div>
+</div>
+
+<div class="note n-green">
+  <div class="ni">🔑</div>
+  <div class="nt"><strong>Score 差分的魔法（DMD 为什么可行）：</strong>直接计算 D_KL(p_G ‖ p_data) 需要 p_G 和 p_data 的显式密度函数，在高维视频空间（百万维）中根本无法直接计算。DMD 的核心推导是：D_KL 对生成器参数 θ 的梯度可以被精确分解为 <em>E[(s_fake(x,t) − s_real(x,t)) · ∂G/∂θ]</em>，其中 s_fake 和 s_real 都可以用扩散模型来估计，无需显式密度。这就是"fake score 网络"和"real score 网络"这两个组件存在的全部理由。</div>
+</div>
+
+<h3>B.7 注意力加速（SLA 系列）解决的是什么问题</h3>
+
+<p>步数蒸馏（DMD 系列）压缩的是<strong>推理步数</strong>，但每步的计算量没有减少。视频 DiT 每步的最大计算瓶颈是<strong>注意力机制</strong>（Self-Attention）：</p>
+
+<div class="fblock cyan">
+  <div class="flabel">注意力复杂度</div>
+  Attention(Q, K, V) = softmax(QKᵀ / √d) · V<br><br>
+  计算复杂度：<span class="fc-c">O(N² · D)</span>&nbsp;&nbsp;N = token 数（序列长度），D = 维度<br><br>
+  <span style="color:var(--dim);font-size:.82em">
+  · 视频 DiT：N 可达 50,000~200,000 个 token（高分辨率 × 多帧 × patch 展开）<br>
+  · N² 意味着 token 数翻倍，注意力计算量增加 4 倍<br>
+  · 在长视频/高分辨率下，注意力占总计算量的 60%~80%
+  </span>
+</div>
+
+<p>SLA 系列的核心发现是：视频 DiT 的注意力权重矩阵绝大多数块（≥85%）接近零（token 不互相关注），只有少数块（5%）是关键的高权重注意力。通过<strong>只精确计算 5% 的关键块，跳过或近似其余 95%</strong>，可以在几乎不损失质量的情况下实现 13~18× 注意力加速。</p>
+
+<div class="note n-cyan">
+  <div class="ni">💡</div>
+  <div class="nt"><strong>为什么是视频 DiT 而不是图像？</strong>图像的序列长度 N 通常只有 1K~4K（可接受）。视频加入时间维度后，N 暴增到 50K~200K，N² 的注意力成本变得完全不可接受，这是 SLA 研究背景成立的根本原因。</div>
+</div>
+
+</div>
+</section>
+
+<div class="divider"></div>
 
 <!-- ══════════════════════════ §0 LANDSCAPE ══════════════════════════ -->
 <section id="landscape">
