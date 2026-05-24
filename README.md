@@ -10,6 +10,7 @@ Research on efficient video generation via distillation and attention accelerati
 
 ### Attention Efficiency for Video DiT
 - **SLA** ([arXiv 2509.24006](https://arxiv.org/abs/2509.24006)) — Sparse-Linear Attention: replaces full quadratic attention in video DiTs with a trainable fusion of sparse attention (critical tokens) and linear attention (background context), reducing the O(n²) bottleneck from long video token sequences.
+- **SLA2** ([arXiv 2602.12675](https://arxiv.org/abs/2602.12675)) — Extends SLA with a learnable router (replaces heuristic weight-magnitude split), a more faithful sparse-linear decomposition with learnable mixing ratio, and quantization-aware fine-tuning (QAT) for low-bit attention. Achieves 97% attention sparsity and 18.6× attention speedup on video DiTs.
 
 ## Core Problems Addressed
 
