@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实现级深度解读：DMD / DMD2 / SLA / SLA2</title>
+<style>
+:root {
+  --bg:#0c0e17; --surface:#141723; --surface2:#1b1f30; --surface3:#20253a;
+  --border:#272d45; --border2:#1e2338;
+  --blue:#4f8ef7; --purple:#9b6dff; --green:#3ecf8e;
+  --orange:#ff9f43; --red:#ff6b6b; --cyan:#00d2ff; --yellow:#ffd43b;
+  --text:#dde3f5; --muted:#6b7499; --dim:#3a4060;
+  --code:#0e1120;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:14.5px}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+strong{color:#eef2ff}
+em{color:var(--cyan);font-style:normal}
+</style>
+</head>
+<body>
+<header style="background:linear-gradient(160deg,#090d1e 0%,#0f1530 50%,#090d1e 100%);border-bottom:1px solid #272d45;padding:56px 40px 44px;text-align:center">
+  <h1 style="font-size:2.2rem;font-weight:800;background:linear-gradient(100deg,#4f8ef7,#9b6dff,#00d2ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px">实现级深度解读：DMD / DMD2 / SLA / SLA2</h1>
+  <p style="color:#6b7499;font-size:.95rem;max-width:680px;margin:0 auto 20px">面向在自有 base model 上落地适配的完整技术图谱 —— 含训练算法、损失公式、超参数、代码结构与迁移清单</p>
+</header>
+<div style="max-width:900px;margin:40px auto;padding:0 28px;color:#dde3f5">
+  <p style="margin-bottom:16px">本文件为完整 HTML 版本，请从仓库下载后在浏览器中打开以获得最佳阅读体验。</p>
+  <h2 style="font-size:1.3rem;margin:24px 0 12px;color:#9b6dff">覆盖内容</h2>
+  <ul style="padding-left:20px;line-height:2">
+    <li><strong>DMD</strong>：KL 散度梯度推导、fake/real score 训练目标、完整训练伪代码、关键超参数</li>
+    <li><strong>DMD2</strong>：GAN loss 替代回归损失、两时间尺度更新、Backward Simulation（含 Cosmos 实现）、CFG 蒸馏</li>
+    <li><strong>SLA</strong>：注意力权重二元结构、块三分类算法（kh%=5%/kl%=10%）、ELU 线性核、微调蒸馏流程</li>
+    <li><strong>SLA2</strong>：可学习路由器 MLP、STE 梯度、忠实稀疏-线性分解、QAT fake quantization 实现</li>
+    <li><strong>适配指南</strong>：分阶段落地路径、8 种高频踩坑与解法、各 base model 架构对照表</li>
+  </ul>
+  <p style="margin-top:24px;color:#6b7499;font-size:.85rem">基于 arXiv 2311.18828 · 2405.14867 · 2509.24006 · 2602.12675 及 NVIDIA Cosmos 工程实现整理</p>
+</div>
+</body>
+</html>
